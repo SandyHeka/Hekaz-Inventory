@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import API from "../api/axios";
+import invImage from "../assets/inventory.jpg";
+import { Link } from "react-router-dom";
 
 const LoginPage = () => {
   const { login } = useAuth();
@@ -20,31 +22,57 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center bg-black">
-      <div className="bg-white p-8 rounded shadow-md w-full max-w-md">
-        <h2 className="text-2xl font-bold mb-4">Login</h2>
-        {error && <p className="text-red-500 text-sm mb-2">{error}</p>}
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <input
-            type="email"
-            placeholder="Email"
-            className="w-full border border-gray-300 p-2 rounded"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-          <input
-            type="pasword"
-            placeholder="Password"
-            className="w-full border border-gray-300 p-2 rounded"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-          <button className="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700">
-            Login
-          </button>
-        </form>
+    <div className="min-h-screen grid grid-cols-1 md:grid-cols-2 bg-[#f4f0ec]">
+      {/* Left Side: Form */}
+      <div className="flex items-center justify-center p-8 bg-white shadow">
+        <div className="w-full max-w-md space-y-6">
+          <h2 className="text-3xl font-bold text-gray-900">Sign-In</h2>
+          {error && <p className="text-red-500 text-sm mb-2">{error}</p>}
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <input
+              type="email"
+              placeholder="Email"
+              className="w-full border border-gray-300 p-2 rounded"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+            <input
+              type="pasword"
+              placeholder="Password"
+              className="w-full border border-gray-300 p-2 rounded"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+            <p className="text-sm text-center text-gray-600">
+              Don’t have an account?{" "}
+              <Link to="/register" className="text-blue-600 underline">
+                Sign up
+              </Link>
+            </p>
+
+            <button className="w-full bg-[#c16e02] text-white py-2 rounded-md hover:bg-[#a5793f] transition">
+              Login
+            </button>
+          </form>
+        </div>
+      </div>
+      <div className="hidden md:block relative">
+        <img
+          src={invImage}
+          alt="Warehouse"
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-black/50 flex flex-col justify-center px-12 text-white">
+          <h2 className="text-3xl font-bold mb-2">
+            A simple approach to managing inventory
+          </h2>
+          <p className="text-sm">
+            The simplest inventory software for business and teams to stay on
+            top of their stuff.
+          </p>
+        </div>
       </div>
     </div>
   );
