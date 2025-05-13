@@ -38,7 +38,7 @@ const LoginPage = () => {
               required
             />
             <input
-              type="pasword"
+              type="password"
               placeholder="Password"
               className="w-full border border-gray-300 p-2 rounded"
               value={password}
