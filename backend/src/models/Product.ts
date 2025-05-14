@@ -7,6 +7,7 @@ export interface IProduct extends Document{
     quantity:number;
     price:number;
     category:string;
+    barcode:string;
 }
 
 const productSchema: Schema = new Schema<IProduct>(
@@ -15,8 +16,8 @@ const productSchema: Schema = new Schema<IProduct>(
         description:{type:String},
         quantity:{type:Number, required:true},
         price: {type:Number, required:true},
-        category:{type:String, required:true}
-
+        category:{type:String, required:true},
+        barcode: { type: String, required: true, unique: true },
     },
    { timestamps:true}
 );
