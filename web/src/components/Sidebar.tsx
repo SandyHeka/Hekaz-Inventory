@@ -3,12 +3,12 @@ const Sidebar = () => {
    
        <aside className="w-full md:w-64 bg-gray-100 dark:bg-gray-800 p-6 hidden md:block">
         <div className="flex justify-between items-center mb-6">
-          <h1 className="text-2xl font-bold">Hekaz  Inventory</h1>
+          <h1 className="text-2xl font-bold">HekaZ Inventory</h1>
           <button
-           
+          
             className="text-sm border rounded px-2 py-1 dark:text-white"
           >
-        
+          
           </button>
         </div>
         <div className="space-y-4">
