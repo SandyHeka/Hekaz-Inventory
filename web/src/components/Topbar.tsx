@@ -121,7 +121,7 @@ const Topbar = ({ onMobileToggle }: { onMobileToggle: () => void }) => {
         </Menu>
       </div>
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
-        <div className="flex items-center justify-center p-8 bg-white shadow">
+        <div className="flex items-center justify-center p-8 bg-white shadow dark:bg-gray-900 border-b dark:border-gray-700">
           <div className="w-full max-w-md space-y-6">
             <h2 className="text-3xl font-bold text-gray-900">
               Change Password
@@ -132,7 +132,7 @@ const Topbar = ({ onMobileToggle }: { onMobileToggle: () => void }) => {
               <input
                 type="password"
                 placeholder="Old Password"
-                className="w-full border border-gray-300 p-2 rounded"
+                className="w-full border border-gray-300 dark:bg-gray-900 border-b dark:border-gray-700 p-2 rounded"
                 value={oldPassword}
                 onChange={(e) => setOldPassword(e.target.value)}
                 required
@@ -140,7 +140,7 @@ const Topbar = ({ onMobileToggle }: { onMobileToggle: () => void }) => {
               <input
                 type="password"
                 placeholder="New Password"
-                className="w-full border border-gray-300 p-2 rounded"
+                className="w-full border border-gray-300 dark:bg-gray-900 border-b dark:border-gray-700 p-2 rounded"
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
                 required
