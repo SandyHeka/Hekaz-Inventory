@@ -11,13 +11,42 @@ import {
 import { useEffect, useState } from "react";
 import { Menu, Transition } from "@headlessui/react";
 import { useAuth } from "../context/AuthContext";
+import Modal from "./Modal";
+import API from "../api/axios";
 const Topbar = ({ onMobileToggle }: { onMobileToggle: () => void }) => {
   const [darkMode, setDarkMode] = useState(false);
-  const { user, logout } = useAuth();
+  const { user, token, logout } = useAuth();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [oldPassword, setOldPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [error, setError] = useState("");
+  const [message, setMessage] = useState("");
 
   useEffect(() => {
     document.documentElement.classList.toggle("dark", darkMode);
   }, [darkMode]);
+
+  const handleChangePassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
+    try {
+      const res = API.put(
+        "/auth/change-password",
+        {
+          oldPassword,
+          newPassword,
+        },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      setMessage("Password updated successfully");
+      setOldPassword("");
+      setNewPassword("");
+      setIsModalOpen(false);
+    } catch (err: any) {
+      setMessage("");
+      setError(err.response?.data?.error || "Password Change failed");
+    }
+  };
 
   return (
     <header className="flex justify-between items-center p-4 bg-white dark:bg-gray-900 border-b dark:border-gray-700 md:ml-0">
@@ -63,12 +92,14 @@ const Topbar = ({ onMobileToggle }: { onMobileToggle: () => void }) => {
                       className={`${
                         active ? "bg-gray-100 dark:bg-gray-700" : ""
                       } group flex w-full items-center rounded-md px-4 py-2 text-sm text-gray-700 dark:text-gray-200`}
+                      onClick={() => setIsModalOpen(true)}
                     >
                       <Key className="mr-2" size={16} />
                       Change Password
                     </button>
                   )}
                 </Menu.Item>
+
                 {user ? (
                   <Menu.Item>
                     {({ active }) => (
@@ -89,6 +120,39 @@ const Topbar = ({ onMobileToggle }: { onMobileToggle: () => void }) => {
           </Transition>
         </Menu>
       </div>
+      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
+        <div className="flex items-center justify-center p-8 bg-white shadow">
+          <div className="w-full max-w-md space-y-6">
+            <h2 className="text-3xl font-bold text-gray-900">
+              Change Password
+            </h2>
+            {error && <p className="text-red-500 text-sm mb-2">{error}</p>}
+            {message && <p className="text-green-600">{message}</p>}
+            <form className="space-y-4" onSubmit={handleChangePassword}>
+              <input
+                type="password"
+                placeholder="Old Password"
+                className="w-full border border-gray-300 p-2 rounded"
+                value={oldPassword}
+                onChange={(e) => setOldPassword(e.target.value)}
+                required
+              />
+              <input
+                type="password"
+                placeholder="New Password"
+                className="w-full border border-gray-300 p-2 rounded"
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+                required
+              />
+
+              <button className="w-full bg-[#c16e02] text-white py-2 rounded-md hover:bg-[#a5793f] transition">
+                Change Password
+              </button>
+            </form>
+          </div>
+        </div>
+      </Modal>
     </header>
   );
 };
