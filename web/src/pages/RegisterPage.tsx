@@ -6,16 +6,22 @@ import { Link } from "react-router-dom";
 
 const RegisterPage = () => {
   const { login } = useAuth();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [formData, setFormData] = useState({
+    email: "",
+    password:"",
+    name:"",
+    phone:""
+  });
   const [error, setError] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
     try {
-      const res = await API.post("/auth/register", { email, password });
+      const res = await API.post("/auth/register", formData);
       login(res.data.token);
+      // const res = await API.post("/auth/register", { email, password });
+      // login(res.data.token);
     } catch (err: any) {
       setError(err.response?.data?.error || "Login failed");
     }
@@ -33,32 +39,34 @@ const RegisterPage = () => {
               type="email"
               placeholder="Email"
               className="w-full border border-gray-300 p-2 rounded"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              value={formData.email}
+              onChange={(e) => setFormData({...formData, [e.target.name] : e.target.value})}
               required
             />
+    
             <input
               type="pasword"
               placeholder="Password"
               className="w-full border border-gray-300 p-2 rounded"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              value={formData.password}
+              onChange={(e) => setFormData({...formData, [e.target.name] : e.target.value})}
               required
             />
             <input
               type="text"
-              placeholder="First Name"
+              placeholder="Name"
               className="w-full border border-gray-300 p-2 rounded"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              value={formData.name}
+              onChange={(e) => setFormData({...formData, [e.target.name] : e.target.value})}
               required
             />
-            <input
+           
+             <input
               type="text"
-              placeholder="Last Name"
+              placeholder="Phone"
               className="w-full border border-gray-300 p-2 rounded"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              value={formData.phone}
+              onChange={(e) => setFormData({...formData, [e.target.name] : e.target.value})}
               required
             />
             <p className="text-sm text-center text-gray-600">
