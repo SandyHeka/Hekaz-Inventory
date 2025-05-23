@@ -4,8 +4,9 @@ import { hashPassword, comparePassword, generateToken } from "../utils/auth";
 
 export const register = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { name, email, password, role } = req.body;
-
+    const { name, email, password, role, phone } = req.body;
+    console.log(name);
+    
     const existing = await User.findOne({ email });
     if (existing) {
       res.status(400).json({ error: "Email already in use" });
@@ -13,7 +14,7 @@ export const register = async (req: Request, res: Response): Promise<void> => {
     }
 
     const hashed = await hashPassword(password);
-    const user = await User.create({ name, email, password: hashed, role });
+    const user = await User.create({ name, email, password: hashed, role, phone });
 
     res.status(201).json({ message: "User created", userId: user._id });
   } catch (err) {
