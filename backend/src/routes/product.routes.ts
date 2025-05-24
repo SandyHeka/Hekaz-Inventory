@@ -6,10 +6,10 @@ import {
   updateProduct,
   deleteProduct,
 } from "../controllers/product.controller";
-
+import { upload } from "../middleware/upload";
 const router = express.Router();
 
-router.post("/", createProduct);
+router.post("/", upload.single("image"), createProduct);
 router.get("/", getAllProducts);
 router.get("/:id", getProductById);
 router.put("/:id", updateProduct);

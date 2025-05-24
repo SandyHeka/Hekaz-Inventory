@@ -1,15 +1,13 @@
-import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
-import { useAuth } from "./context/AuthContext";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
-import ProductListPage from "./pages/ProductListPage";
+import ProductListPage from "./pages/ProductPage";
 import DashboardPage from "./pages/DasboardPage";
 import PublicRoute from "./routes/PublicRoute";
 import PrivateRoute from "./routes/PrivateRoute";
 
 function App() {
-  const { token } = useAuth();
-
   return (
     <BrowserRouter>
       <Routes>
@@ -29,10 +27,7 @@ function App() {
             </PublicRoute>
           }
         />
-        {/* <Route
-          path="/"
-          element={token ? <Dashboard /> : <Navigate to="/login" />}
-        /> */}
+
         <Route
           path="/products"
           element={
@@ -45,11 +40,10 @@ function App() {
           path="/"
           element={
             <PrivateRoute>
-              <DashboardPage />
+              <DashboardPage>{""}</DashboardPage>
             </PrivateRoute>
           }
         />
-        {/* <Route path="/" element={token ? <DashboardPage /> : <Navigate to="/login"/>} /> */}
       </Routes>
     </BrowserRouter>
   );

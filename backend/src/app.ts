@@ -7,7 +7,8 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use("/api/auth", authRoutes);
-app.use("/api/products", productRoutes)
+app.use("/api/products", productRoutes);
+app.use("/uploads", express.static("uploads"));
 app.get("/api/health", (_req, res) => {
   res.status(200).json({ message: "API is healthy 🚀" });
 });

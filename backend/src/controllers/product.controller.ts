@@ -1,12 +1,14 @@
-import { Request, Response } from 'express';
+import { Request, Response } from "express";
 import { Product } from "../models/Product";
 
 // CREATE
 export const createProduct = async (req: Request, res: Response) => {
   try {
-    const product = await Product.create(req.body);
+    const imageUrl = req.file ? `/uploads/${req.file.filename}` : undefined;
+    const product = await Product.create({ ...req.body, imageUrl });
     res.status(201).json(product);
   } catch (err) {
+    console.error("❌ Product creation error:", err); // 👈 Add this
     res.status(500).json({ error: "Failed to create product" });
   }
 };
@@ -35,7 +37,9 @@ export const getProductById = async (req: Request, res: Response) => {
 // UPDATE
 export const updateProduct = async (req: Request, res: Response) => {
   try {
-    const updated = await Product.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    const updated = await Product.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+    });
     if (!updated) return res.status(404).json({ error: "Product not found" });
     res.json(updated);
   } catch (err) {
