@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import API from "../api/axios";
 import DashboardLayout from "./DasboardPage";
 import AddProductForm from "../components/AddProductForm";
+import ProductList from "../components/ProductList";
 
 type Product = {
   _id: string;
@@ -34,8 +35,19 @@ const ProductListPage = () => {
 
   return (
     <DashboardLayout>
-      <h2 className="text-2xl font-bold text-white mb-4">Product Management</h2>
-      <AddProductForm />
+      <h2 className="text-2xl font-bold text-gray-400 mb-6">Product Management</h2>
+    
+     <div className="flex flex-col md:flex-row gap-4">
+      <div className="w-full md:w-1/2 bg-white dark:bg-gray-800 p-4 rounded shadow">
+          <AddProductForm />
+      </div>
+      <div className="md:w-1/2 bg-white dark:bg-gray-800 p-4 rounded shadow overflow-x-auto">
+              <h3 className="text-lg font-semibold mb-4">Product List</h3>
+                 
+            <ProductList />
+        
+      </div>
+    </div>
     </DashboardLayout>
   );
 };

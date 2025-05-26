@@ -23,7 +23,7 @@ const DashboardPage = ({ children }: { children: React.ReactNode }) => {
       >
         <Topbar onMobileToggle={() => setMobileOpen(!mobileOpen)} />
 
-        <main className="p-6">{children}</main>
+        <main className="p-4">{children}</main>
       </div>
     </div>
   );

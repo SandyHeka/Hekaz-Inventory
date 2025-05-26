@@ -58,7 +58,7 @@ const AddProductForm = () => {
   return (
     <form
       onSubmit={handleSubmit}
-      className="bg-white dark:bg-gray-800 p-6 rounded shadow w-full max-w-xl space-y-4"
+      className="space-y-4"
     >
       {["name", "category", "price", "quantity", "barcode"].map((field) => (
         <input
@@ -68,7 +68,7 @@ const AddProductForm = () => {
           value={form[field as keyof typeof form]}
           onChange={handleChange}
           placeholder={field.charAt(0).toUpperCase() + field.slice(1)}
-          className="w-full p-2 border rounded dark:bg-gray-700 dark:text-white"
+          className="w-full  md:w-1/2 p-2 border rounded dark:bg-gray-700 dark:text-white"
           required
         />
       ))}

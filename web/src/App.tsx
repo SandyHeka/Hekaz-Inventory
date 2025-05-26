@@ -31,17 +31,17 @@ function App() {
         <Route
           path="/products"
           element={
-            <PrivateRoute>
+            <PublicRoute>
               <ProductListPage />
-            </PrivateRoute>
+            </PublicRoute>
           }
         />
         <Route
           path="/"
           element={
-            <PrivateRoute>
+            <PublicRoute>
               <DashboardPage>{""}</DashboardPage>
-            </PrivateRoute>
+            </PublicRoute>
           }
         />
       </Routes>
