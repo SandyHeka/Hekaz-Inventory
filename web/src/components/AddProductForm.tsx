@@ -68,7 +68,7 @@ const AddProductForm = () => {
           value={form[field as keyof typeof form]}
           onChange={handleChange}
           placeholder={field.charAt(0).toUpperCase() + field.slice(1)}
-          className="w-full  md:w-1/2 p-2 border rounded dark:bg-gray-700 dark:text-white"
+          className="w-full  md:w-full p-2 border rounded dark:bg-gray-700 dark:text-white"
           required
         />
       ))}
@@ -85,7 +85,7 @@ const AddProductForm = () => {
         type="file"
         accept="image/*"
         onChange={(e) => setImage(e.target.files?.[0] || null)}
-        className="w-full"
+        className="w-full dark:bg-gray-700 dark:text-white"
       />
 
       {message && <p className="text-green-500 text-sm">{message}</p>}
