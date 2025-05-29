@@ -1,4 +1,5 @@
 // Sidebar.tsx
+import { LibraryBig } from "lucide-react";
 import {
   Menu,
   X,
@@ -7,8 +8,8 @@ import {
   BringToFrontIcon,
   UsersRound,
   Factory,
-  BarChart4,
 } from "lucide-react";
+
 import { Link } from "react-router-dom";
 
 const Sidebar = ({
@@ -68,6 +69,10 @@ const Sidebar = ({
         <Link to="/dealers" className="flex items-center gap-3">
           <Factory size={20} />
           {!collapsed && <span className="text-lg">Dealers</span>}
+        </Link>
+        <Link to="/category" className="flex items-center gap-3">
+          <LibraryBig size={20} />
+          {!collapsed && <span className="text-lg">Category</span>}
         </Link>
       </nav>
     </aside>

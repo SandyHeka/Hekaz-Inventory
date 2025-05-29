@@ -5,7 +5,8 @@ import RegisterPage from "./pages/RegisterPage";
 import ProductListPage from "./pages/ProductPage";
 import DashboardPage from "./pages/DasboardPage";
 import PublicRoute from "./routes/PublicRoute";
-import PrivateRoute from "./routes/PrivateRoute";
+// import PrivateRoute from "./routes/PrivateRoute";
+import CategoryPage from "./pages/CategoryPage";
 
 function App() {
   return (
@@ -33,6 +34,14 @@ function App() {
           element={
             <PublicRoute>
               <ProductListPage />
+            </PublicRoute>
+          }
+        />
+        <Route
+          path="/category"
+          element={
+            <PublicRoute>
+              <CategoryPage />
             </PublicRoute>
           }
         />
