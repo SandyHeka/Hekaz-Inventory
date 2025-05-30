@@ -3,7 +3,7 @@ import API from "../api/axios";
 import DashboardLayout from "./DasboardPage";
 import AddProductForm from "../components/AddProductForm";
 import ProductList from "../components/ProductList";
-import type { Product } from "../types";
+import type { Product } from "../types/ProductTypes";
 import ConfirmDialog from "../components/ConfirmDialog";
 
 const ProductListPage = () => {

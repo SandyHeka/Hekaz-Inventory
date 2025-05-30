@@ -8,3 +8,4 @@ export type Product = {
   barcode: string;
   imageUrl?: string;
 };
+

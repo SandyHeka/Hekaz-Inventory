@@ -9,7 +9,7 @@ app.use(cors());
 app.use(express.json());
 app.use("/api/auth", authRoutes);
 app.use("/api/products", productRoutes);
-app.use("/api/categories", categoryRoutes)
+app.use("/api/category", categoryRoutes)
 app.use("/uploads", express.static("uploads"));
 app.get("/api/health", (_req, res) => {
   res.status(200).json({ message: "API is healthy 🚀" });

@@ -5,14 +5,12 @@ import { Category } from '../models/Category';
 
 export const createCategory = async (req: Request, res: Response) =>{
     try{
+        
        const { name, status } = req.body;
-
         if (!name) {
         return res.status(400).json({ message: "Category name is required" });
         }
-
         const newCategory = await Category.create({ name, status });
-
         res.status(201).json(newCategory);
     }
     catch(err){

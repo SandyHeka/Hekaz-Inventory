@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import API from "../api/axios";
-import type { Product } from "../types";
+import type { Product } from "../types/ProductTypes";
 const generateBarcode = () => {
   return Math.random().toString(36).substring(2, 10).toUpperCase();
 };
