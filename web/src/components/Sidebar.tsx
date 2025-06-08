@@ -9,6 +9,7 @@ import {
   UsersRound,
   Factory,
 } from "lucide-react";
+import { GiBrandyBottle } from "react-icons/gi";
 
 import { Link } from "react-router-dom";
 
@@ -73,6 +74,10 @@ const Sidebar = ({
         <Link to="/category" className="flex items-center gap-3">
           <LibraryBig size={20} />
           {!collapsed && <span className="text-lg">Category</span>}
+        </Link>
+        <Link to="/brand" className="flex items-center gap-3">
+          <GiBrandyBottle size={20} />
+          {!collapsed && <span className="text-lg">Brand</span>}
         </Link>
       </nav>
     </aside>

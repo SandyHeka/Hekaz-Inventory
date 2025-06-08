@@ -7,6 +7,7 @@ import DashboardPage from "./pages/DasboardPage";
 import PublicRoute from "./routes/PublicRoute";
 // import PrivateRoute from "./routes/PrivateRoute";
 import CategoryPage from "./pages/CategoryPage";
+import BrandPage from "./pages/BrandPage";
 
 function App() {
   return (
@@ -42,6 +43,14 @@ function App() {
           element={
             <PublicRoute>
               <CategoryPage />
+            </PublicRoute>
+          }
+        />
+        <Route
+          path="/brand"
+          element={
+            <PublicRoute>
+              <BrandPage />
             </PublicRoute>
           }
         />

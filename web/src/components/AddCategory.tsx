@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { CategoryStatus } from "../types/CategoryStatusTypes";
+import { StatusType } from "../types/StatusTypes";
 import type { Category } from "../types/CategoryTypes";
 import API from "../api/axios";
 import ToastMessage from "./ToastMessage";
@@ -12,13 +12,13 @@ type Props = {
 const AddCategoryForm = ({ existingCategory = null, onSuccess }: Props) => {
   const [form, setForm] = useState({
     name: existingCategory?.name || "",
-    status: existingCategory?.status || CategoryStatus.ACTIVE,
+    status: existingCategory?.status || StatusType.ACTIVE,
   });
 
   useEffect(() => {
     setForm({
       name: existingCategory?.name || "",
-      status: existingCategory?.status || CategoryStatus.ACTIVE,
+      status: existingCategory?.status || StatusType.ACTIVE,
     });
   }, [existingCategory]);
   const [loading, setLoading] = useState(false);
@@ -56,7 +56,7 @@ const AddCategoryForm = ({ existingCategory = null, onSuccess }: Props) => {
       }
       setForm({
         name: "",
-        status: CategoryStatus.ACTIVE,
+        status: StatusType.ACTIVE,
       });
       onSuccess();
     } catch (err: any) {
@@ -85,12 +85,12 @@ const AddCategoryForm = ({ existingCategory = null, onSuccess }: Props) => {
         onChange={(e) =>
           setForm((prev) => ({
             ...prev,
-            status: e.target.value as CategoryStatus,
+            status: e.target.value as StatusType,
           }))
         }
         className="w-full p-2 border rounded dark:bg-gray-700 dark:text-white"
       >
-        {Object.values(CategoryStatus).map((status) => (
+        {Object.values(StatusType).map((status) => (
           <option key={status} value={status}>
             {status.charAt(0).toUpperCase() + status.slice(1)}
           </option>
