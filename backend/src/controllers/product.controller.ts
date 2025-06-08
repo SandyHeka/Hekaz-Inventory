@@ -15,10 +15,19 @@ export const createProduct = async (req: Request, res: Response) => {
 };
 
 // READ ALL
-export const getAllProducts = async (_req: Request, res: Response) => {
+export const getAllProducts = async (req: Request, res: Response) => {
   try {
-    const products = await Product.find();
-    res.json(products);
+    const page = parseInt(req.query.page as string) || 1;
+    const limit = parseInt(req.query.limit as string) || 10;
+
+    const skip = (page - 1) * limit;
+
+    const [products, total] = await Promise.all([
+      Product.find().skip(skip).limit(limit),
+      Product.countDocuments(),
+    ]);
+
+    res.json({ products, total, page, totalPages: Math.ceil(total / limit) });
   } catch (err) {
     res.status(500).json({ error: "Failed to fetch products" });
   }

@@ -5,9 +5,12 @@ import AddProductForm from "../components/AddProductForm";
 import ProductList from "../components/ProductList";
 import type { Product } from "../types/ProductTypes";
 import ConfirmDialog from "../components/ConfirmDialog";
+import Pagination from "../components/Pagination";
 
 const ProductListPage = () => {
   const [products, setProducts] = useState<Product[]>([]);
+  const [totalPages, setTotalPages] = useState(1);
+  const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
@@ -15,10 +18,12 @@ const ProductListPage = () => {
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
 
-  const fetchProducts = async () => {
+  const fetchProducts = async (page: number = 1) => {
     try {
-      const res = await API.get("/products");
-      setProducts(res.data);
+      const res = await API.get(`/products?page=${page}&limit=10`);
+      setProducts(res.data.products);
+      setTotalPages(res.data.totalPage);
+      setCurrentPage(res.data.page);
     } catch (err: any) {
       setError("Failed to fetch products");
     } finally {
@@ -74,6 +79,11 @@ const ProductListPage = () => {
               products={products}
               onDelete={openConfirmDialog}
               onEdit={setEditingProduct}
+            />
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={setCurrentPage}
             />
           </div>
         ) : (
