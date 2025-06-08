@@ -1,19 +1,115 @@
-import React from "react";
+import React, { useState } from "react";
+import type { Brand } from "../../types/BrandTypes";
+import { StatusType } from "../../types/StatusTypes";
+import API from "../../api/axios";
 
-const AddBrandForm = () => {
+type Props = {
+  editingBrand?: Brand | null;
+  onSuccess: () => void;
+};
+const AddBrandForm = ({ editingBrand = null, onSuccess }: Props) => {
+  const [form, setForm] = useState({
+    name: editingBrand?.name || "",
+    status: editingBrand?.status || StatusType.ACTIVE,
+  });
+  const [image, setImage] = useState<File | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setMessage("");
+    setError("");
+    try {
+      const formData = new FormData();
+      Object.entries(form).forEach(([Key, value]) => {
+        formData.append(Key, value);
+      });
+      if (image) {
+        formData.append("image", image);
+      }
+      if (editingBrand) {
+        await API.put(`/brands/${editingBrand._id}`, formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
+        console.log("Submitting form:  ", form);
+        setMessage("Brand updated Successfully");
+      } else {
+        await API.post("/brands", formData, {
+          headers: { "Content-type": "multipart/form-data" },
+        });
+        console.log("Submitting form:", form);
+        setMessage("Brand addedd successfully");
+      }
+      setForm({
+        name: "",
+        status: StatusType.ACTIVE,
+      });
+    } catch (err: any) {
+      console.error("Error response:", err.response);
+      console.error("Error message:", err.message);
+      setError("Failed to add brand");
+    } finally {
+      setLoading(false);
+    }
+  };
   return (
-    <form className="space-y-4">
+    <form onSubmit={handleSubmit} className="space-y-4">
       <input
         type="text"
         name="name"
         placeholder="Brand Name"
+        value={form.name}
+        onChange={handleChange}
         className="w-full p-2 border rounded dark:bg-gray-700 dark:text-white"
         required
       />
-      <select className="w-full p-2 border rounded dark:bg-gray-700 dark:text-white">
-        <option>Sand</option>
+      <select
+        value={form.status}
+        onChange={(e) =>
+          setForm((prev) => ({
+            ...prev,
+            status: e.target.value as StatusType,
+          }))
+        }
+        className="w-full p-2 border rounded dark:bg-gray-700 dark:text-white"
+      >
+        {Object.values(StatusType).map((status) => (
+          <option key={status} value={status}>
+            {status.charAt(0).toUpperCase() + status.slice(1)}
+          </option>
+        ))}
       </select>
-      <input type="file" accept="image/*" className="w-full" />
+      {editingBrand?.imageUrl && (
+        <div className="mt-2">
+          <p className="text-sm text-gray-500 dark:text-gray-300 mb-1">
+            Current Image:
+          </p>
+          <img
+            src={
+              editingBrand.imageUrl
+                ? `http://localhost:5000${
+                    editingBrand.imageUrl
+                  }?t=${new Date().getTime()}`
+                : "/dummy.jpg"
+            }
+            alt="Current"
+            className="w-20 h-20 object-cover rounded"
+          />
+        </div>
+      )}
+      <input
+        type="file"
+        accept="image/*"
+        onChange={(e) => setImage(e.target.files?.[0] || null)}
+        className="w-full"
+      />
       <button
         type="submit"
         className="bg-primary text-white px-4 py-2 rounded hover:bg-primary-dark disabled:opacity-50"
