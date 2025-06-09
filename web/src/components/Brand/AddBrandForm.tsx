@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import type { Brand } from "../../types/BrandTypes";
 import { StatusType } from "../../types/StatusTypes";
 import API from "../../api/axios";
+import ToastMessage from "../ToastMessage";
 
 type Props = {
   editingBrand?: Brand | null;
@@ -12,6 +13,14 @@ const AddBrandForm = ({ editingBrand = null, onSuccess }: Props) => {
     name: editingBrand?.name || "",
     status: editingBrand?.status || StatusType.ACTIVE,
   });
+  useEffect(() => {
+    if (editingBrand) {
+      setForm({
+        name: editingBrand?.name || "",
+        status: editingBrand?.status || StatusType.ACTIVE,
+      });
+    }
+  }, [editingBrand]);
   const [image, setImage] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
@@ -44,13 +53,15 @@ const AddBrandForm = ({ editingBrand = null, onSuccess }: Props) => {
         await API.post("/brands", formData, {
           headers: { "Content-type": "multipart/form-data" },
         });
-        console.log("Submitting form:", form);
+
         setMessage("Brand addedd successfully");
       }
       setForm({
         name: "",
         status: StatusType.ACTIVE,
       });
+      setImage(null);
+      onSuccess();
     } catch (err: any) {
       console.error("Error response:", err.response);
       console.error("Error message:", err.message);
@@ -110,11 +121,17 @@ const AddBrandForm = ({ editingBrand = null, onSuccess }: Props) => {
         onChange={(e) => setImage(e.target.files?.[0] || null)}
         className="w-full"
       />
+      {message && <ToastMessage message={message} />}
+
       <button
         type="submit"
         className="bg-primary text-white px-4 py-2 rounded hover:bg-primary-dark disabled:opacity-50"
       >
-        Save
+        {loading
+          ? "Saving..."
+          : editingBrand
+          ? "Update Product"
+          : "Add Product"}
       </button>
     </form>
   );
