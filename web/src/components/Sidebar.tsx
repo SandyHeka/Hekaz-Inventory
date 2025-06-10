@@ -67,7 +67,7 @@ const Sidebar = ({
           <UsersRound size={20} />
           {!collapsed && <span className="text-lg">Customer</span>}
         </Link>
-        <Link to="/dealers" className="flex items-center gap-3">
+        <Link to="/dealer" className="flex items-center gap-3">
           <Factory size={20} />
           {!collapsed && <span className="text-lg">Dealers</span>}
         </Link>
