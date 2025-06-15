@@ -5,8 +5,33 @@ import path from "path";
 // CREATE
 export const createProduct = async (req: Request, res: Response) => {
   try {
+    const { name, quantity, price, category, brand, dealer, barcode } =
+      req.body;
+
+    if (
+      !name ||
+      !quantity ||
+      !price ||
+      !category ||
+      !brand ||
+      !dealer ||
+      !barcode
+    ) {
+      return res.status(400).json({ error: "Missing required fields" });
+    }
+
     const imageUrl = req.file ? `/uploads/${req.file.filename}` : undefined;
-    const product = await Product.create({ ...req.body, imageUrl });
+    const product = await Product.create({
+      name,
+      quantity,
+      price,
+      category,
+      brand,
+      dealer,
+      barcode,
+      imageUrl,
+      description: req.body.description || "",
+    });
     res.status(201).json(product);
   } catch (err) {
     console.error("❌ Product creation error:", err); // 👈 Add this
@@ -23,7 +48,12 @@ export const getAllProducts = async (req: Request, res: Response) => {
     const skip = (page - 1) * limit;
 
     const [products, total] = await Promise.all([
-      Product.find().skip(skip).limit(limit),
+      Product.find()
+        .skip(skip)
+        .limit(limit)
+        .populate("brand", "name")
+        .populate("category", "name")
+        .populate("dealer", "name"),
       Product.countDocuments(),
     ]);
 

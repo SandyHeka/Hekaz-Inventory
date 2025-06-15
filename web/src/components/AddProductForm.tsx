@@ -14,23 +14,75 @@ const AddProductForm = ({ existingProduct = null, onSuccess }: Props) => {
     name: existingProduct?.name || "",
     description: existingProduct?.description || "",
     category: existingProduct?.category || "",
+    dealer: existingProduct?.dealer || "",
+    brand: existingProduct?.brand || "",
     price: existingProduct?.price?.toString() || "",
     quantity: existingProduct?.quantity?.toString() || "",
     barcode: existingProduct?.barcode || generateBarcode(),
   });
-
+  const [categories, setCategories] = useState<{ _id: string; name: string }[]>(
+    []
+  );
+  const [brands, setBrands] = useState<{ _id: string; name: string }[]>([]);
+  const [dealers, setDealers] = useState<{ _id: string; name: string }[]>([]);
   useEffect(() => {
-    if (existingProduct) {
+    const fetchCategories = async () => {
+      try {
+        const res = await API.get("/category?limit=100");
+        setCategories(res.data.category || []); // adjust based on your API shape
+      } catch (error) {
+        console.error("Failed to fetch categories:", error);
+      }
+    };
+    const fetchBrands = async () => {
+      try {
+        const res = await API.get("/brands?limit=100");
+        setBrands(res.data.brands || []);
+      } catch (error) {
+        console.error("failed to fetch catgeories:", error);
+      }
+    };
+    const fetchDealers = async () => {
+      try {
+        const res = await API.get("/dealers?limit=100");
+        setDealers(res.data.dealer || []);
+      } catch (error) {
+        console.error("Failed to fetch dealers:", error);
+      }
+    };
+
+    fetchCategories();
+    fetchBrands();
+    fetchDealers();
+  }, []);
+  useEffect(() => {
+    if (
+      existingProduct &&
+      brands.length > 0 &&
+      categories.length > 0 &&
+      dealers.length > 0
+    ) {
       setForm({
-        name: existingProduct?.name || "",
-        description: existingProduct?.description || "",
-        category: existingProduct?.category || "",
+        name: existingProduct.name || "",
+        description: existingProduct.description || "",
+        category:
+          typeof existingProduct.category === "object"
+            ? existingProduct.category._id
+            : existingProduct.category || "",
+        dealer:
+          typeof existingProduct.dealer === "object"
+            ? existingProduct.dealer._id
+            : existingProduct.dealer || "",
+        brand:
+          typeof existingProduct.brand === "object"
+            ? existingProduct.brand._id
+            : existingProduct.brand || "",
         price: existingProduct?.price?.toString() || "",
         quantity: existingProduct?.quantity?.toString() || "",
         barcode: existingProduct?.barcode || generateBarcode(),
       });
     }
-  }, [existingProduct]);
+  }, [existingProduct, brands, categories, dealers]);
   const [image, setImage] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
@@ -75,6 +127,8 @@ const AddProductForm = ({ existingProduct = null, onSuccess }: Props) => {
         name: "",
         description: "",
         category: "",
+        dealer: "",
+        brand: "",
         price: "",
         quantity: "",
         barcode: generateBarcode(),
@@ -98,17 +152,48 @@ const AddProductForm = ({ existingProduct = null, onSuccess }: Props) => {
         className="w-full p-2 border rounded dark:bg-gray-700 dark:text-white"
         required
       />
-
-      <input
-        type="text"
+      <select
         name="category"
         value={form.category}
         onChange={handleChange}
-        placeholder="Category"
         className="w-full p-2 border rounded dark:bg-gray-700 dark:text-white"
         required
-      />
-
+      >
+        <option value="">-- Select Category --</option>
+        {categories.map((cat) => (
+          <option key={cat._id} value={cat._id}>
+            {cat.name}
+          </option>
+        ))}
+      </select>
+      <select
+        name="brand"
+        value={form.brand}
+        onChange={handleChange}
+        className="w-full p-2 border rounded dark:bg-gray-700 dark:text-white"
+        required
+      >
+        <option value="">-- Select Brand --</option>
+        {brands.map((brand) => (
+          <option key={brand._id} value={brand._id}>
+            {brand.name}
+          </option>
+        ))}
+      </select>
+      <select
+        name="dealer"
+        value={form.dealer}
+        onChange={handleChange}
+        className="w-full p-2 border rounded dark:bg-gray-700 dark:text-white"
+        required
+      >
+        <option value="">-- Select Dealer --</option>
+        {dealers.map((dealer) => (
+          <option key={dealer._id} value={dealer._id}>
+            {dealer.name}
+          </option>
+        ))}
+      </select>
       <input
         type="number"
         name="price"

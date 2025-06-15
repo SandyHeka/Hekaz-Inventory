@@ -20,6 +20,12 @@ const ProductList = ({ products, onDelete, onEdit }: Props) => {
               Category
             </th>
             <th className="px-4 py-2 font-medium text-gray-800 dark:text-gray-50">
+              Brand
+            </th>
+            <th className="px-4 py-2 font-medium text-gray-800 dark:text-gray-50">
+              Dealer
+            </th>
+            <th className="px-4 py-2 font-medium text-gray-800 dark:text-gray-50">
               Price
             </th>
             <th className="px-4 py-2 font-medium text-gray-800 dark:text-gray-50">
@@ -43,7 +49,19 @@ const ProductList = ({ products, onDelete, onEdit }: Props) => {
                 {product.name}
               </td>
               <td className="px-4 py-2 text-gray-800 dark:text-gray-50">
-                {product.category}
+                {typeof product.category === "string"
+                  ? product.category
+                  : product.category?.name}
+              </td>
+              <td className="px-4 py-2 text-gray-800 dark:text-gray-50">
+                {typeof product.brand === "string"
+                  ? product.brand
+                  : product.brand?.name}
+              </td>
+              <td className="px-4 py-2 text-gray-800 dark:text-gray-50">
+                {typeof product.dealer === "string"
+                  ? product.dealer
+                  : product.dealer?.name}
               </td>
               <td className="px-4 py-2 text-gray-800 dark:text-gray-50">
                 {product.price}
