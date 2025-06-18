@@ -1,11 +1,22 @@
-// app/_layout.tsx
-import { Stack } from "expo-router";
-import { AuthProvider } from "../context/AuthContext";
+import { Slot, Redirect } from "expo-router";
+import { AuthProvider, useAuth } from "../context/AuthContext";
+
+function RootLayoutNav() {
+  const { isLoggedIn } = useAuth();
+
+  // Auto-redirect based on login state
+  if (!isLoggedIn) {
+    return <Redirect href="/(auth)/login" />;
+  } else {
+    return <Redirect href="/(tabs)/home" />;
+  }
+}
 
 export default function RootLayout() {
   return (
     <AuthProvider>
-      <Stack screenOptions={{ headerShown: false }} />
+      <Slot />
+      <RootLayoutNav />
     </AuthProvider>
   );
 }

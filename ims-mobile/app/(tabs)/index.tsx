@@ -2,7 +2,7 @@ import { StyleSheet } from "react-native";
 
 import EditScreenInfo from "@/components/EditScreenInfo";
 import { Text, View } from "@/components/Themed";
-import Login from "../login";
+import Login from "../(auth)/login";
 
 export default function TabOneScreen() {
   return (

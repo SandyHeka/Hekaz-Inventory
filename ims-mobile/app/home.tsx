@@ -1,22 +1,35 @@
-import { useAuth } from "../context/AuthContext";
-import { useRouter } from "expo-router";
-import { useEffect } from "react";
-import { View, Text, Button } from "react-native";
+import { View, Text, Button, StyleSheet } from "react-native";
 
-export default function Home() {
-  const { token, logout } = useAuth();
+import { useRouter } from "expo-router";
+import { useAuth } from "@/context/AuthContext";
+
+export default function HomeScreen() {
+  const { logout } = useAuth();
   const router = useRouter();
 
-  useEffect(() => {
-    if (!token) {
-      router.replace("/login");
-    }
-  }, [token]);
+  const handleLogout = () => {
+    logout();
+    router.replace("/(auth)/login");
+  };
 
   return (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-      <Text>Welcome to Home</Text>
-      <Button title="Logout" onPress={logout} />
+    <View style={styles.container}>
+      <Text style={styles.text}>Welcome to HekaZ App!</Text>
+      <Button title="Log Out" onPress={handleLogout} />
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#fff",
+    padding: 20,
+  },
+  text: {
+    fontSize: 20,
+    marginBottom: 20,
+  },
+});
