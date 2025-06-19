@@ -39,7 +39,7 @@ export default function LoginScreen() {
     <SafeAreaView style={styles.container}>
       <View style={styles.card}>
         <Image
-          source={require("../../assets/images/hekaz.png")}
+          source={require("../../assets/images/hekazL.png")}
           style={styles.logo}
         />
 
@@ -114,9 +114,10 @@ const styles = StyleSheet.create({
     elevation: 4,
   },
   logo: {
-    width: 200,
-    height: 70,
+    width: 300,
+    height: 97,
     marginBottom: 16,
+    alignItems: "center",
   },
   title: {
     fontSize: 28,
