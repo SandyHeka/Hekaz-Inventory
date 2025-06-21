@@ -1,13 +1,21 @@
-import { StyleSheet } from "react-native";
+import { Button, StyleSheet } from "react-native";
 
-import EditScreenInfo from "@/components/EditScreenInfo";
 import { Text, View } from "@/components/Themed";
-import Login from "../(auth)/login";
+
+import { useAuth } from "@/context/AuthContext";
+import { Redirect } from "expo-router";
 
 export default function TabOneScreen() {
+  const { token, loading, logout } = useAuth();
+  if (loading) return null;
+
+  if (!token) {
+    // No token → redirect to login
+    return <Redirect href="/(auth)/login" />;
+  }
   return (
     <View style={styles.container}>
-      <Login />
+      <Button title="Logout" onPress={logout} />
     </View>
   );
 }

@@ -1,96 +1,186 @@
-import { useAuth } from "@/context/AuthContext";
-import { useState } from "react";
+import React, { useState } from "react";
 import {
   View,
-  TextInput,
-  Button,
   Text,
+  TextInput,
   StyleSheet,
-  KeyboardAvoidingView,
-  Platform,
+  SafeAreaView,
   Image,
+  TouchableOpacity,
 } from "react-native";
+import { Entypo } from "@expo/vector-icons";
+import { useAuth } from "../context/AuthContext";
+import { useRouter } from "expo-router";
 
-const LoginScreen = ({ navigation }) => {
+export default function LoginScreen() {
   const { login } = useAuth();
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [hidePassword, setHidePassword] = useState(true);
   const [error, setError] = useState("");
 
   const handleLogin = async () => {
     try {
-      await login(email, password);
+      if (email && password) {
+        await login(email, password);
+        router.replace("/(tabs)/index");
+      } else {
+        setError("Please enter email and password");
+      }
     } catch (err) {
-      setError("Invalid email or password");
+      setError("Login failed");
     }
   };
 
   return (
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-    >
+    <SafeAreaView style={styles.container}>
       <Image
-        source={require("../assets/images/hekaz.png")}
+        source={require("../assets/images/white.png")}
         style={styles.logo}
       />
+      <View style={styles.card}>
+        <Text style={styles.title}>Login</Text>
+        <Text style={styles.subtitle}>
+          Enter your email and password to log in
+        </Text>
 
-      <TextInput
-        placeholder="Email"
-        value={email}
-        onChangeText={setEmail}
-        style={styles.input}
-      />
-      <TextInput
-        placeholder="Password"
-        value={password}
-        secureTextEntry
-        onChangeText={setPassword}
-        style={styles.input}
-      />
-      {error ? <Text style={styles.error}>{error}</Text> : null}
+        <TextInput
+          style={styles.input}
+          placeholder="Email"
+          value={email}
+          onChangeText={setEmail}
+          placeholderTextColor="black"
+          keyboardType="email-address"
+          autoCapitalize="none"
+        />
 
-      <Button title="Login" onPress={handleLogin} />
+        <View style={styles.passwordContainer}>
+          <TextInput
+            style={styles.passwordInput}
+            placeholder="Password"
+            value={password}
+            placeholderTextColor="black"
+            onChangeText={setPassword}
+            secureTextEntry={hidePassword}
+          />
+          <TouchableOpacity onPress={() => setHidePassword(!hidePassword)}>
+            <Entypo
+              name={hidePassword ? "eye-with-line" : "eye"}
+              size={20}
+              color="gray"
+            />
+          </TouchableOpacity>
+        </View>
 
-      <Text onPress={() => navigation.navigate("Register")} style={styles.link}>
-        No account? Register
-      </Text>
-    </KeyboardAvoidingView>
+        <View style={styles.rememberForgot}>
+          <Text style={styles.rememberMe}>Remember me</Text>
+          <TouchableOpacity>
+            <Text style={styles.forgotPassword}>Forgot Password?</Text>
+          </TouchableOpacity>
+        </View>
+
+        <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
+          <Text style={styles.loginButtonText}>Log In</Text>
+        </TouchableOpacity>
+
+        <View style={styles.signupContainer}>
+          <Text>Don’t have an account? </Text>
+          <TouchableOpacity onPress={() => router.push("/register")}>
+            <Text style={styles.signupText}>Sign Up</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    </SafeAreaView>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: "#e37508",
     justifyContent: "center",
-    paddingHorizontal: 20,
-    backgroundColor: "#ffffff",
+    alignItems: "center",
+  },
+  card: {
+    backgroundColor: "#fff",
+    padding: 24,
+    borderRadius: 16,
+    width: "90%",
+    alignItems: "center",
+    elevation: 4,
   },
   logo: {
-    width: 100,
-    height: 100,
-    resizeMode: "contain",
-    alignSelf: "center",
-    marginBottom: 30, // add space after logo
+    width: 120,
+    height: 80,
+    marginBottom: 16,
+  },
+  title: {
+    fontSize: 28,
+    fontWeight: "bold",
+    marginBottom: 8,
+  },
+  subtitle: {
+    fontSize: 14,
+    color: "#777",
+    marginBottom: 16,
+    textAlign: "center",
   },
   input: {
+    width: "100%",
     borderWidth: 1,
-    borderColor: "#ccc",
-    marginBottom: 12,
-    padding: 12,
+    borderColor: "#ddd",
     borderRadius: 8,
-    width: "100%", // THIS IS IMPORTANT!
+    paddingHorizontal: 12,
+    paddingVertical: 12,
+    marginBottom: 12,
   },
-  error: {
-    color: "red",
-    marginBottom: 10,
-    textAlign: "center",
+  passwordContainer: {
+    width: "100%",
+    flexDirection: "row",
+    borderWidth: 1,
+    borderColor: "#ddd",
+    borderRadius: 8,
+    alignItems: "center",
+    paddingHorizontal: 12,
+    marginBottom: 12,
   },
-  link: {
-    color: "blue",
-    marginTop: 15,
-    textAlign: "center",
+  passwordInput: {
+    flex: 1,
+    paddingVertical: 12,
+  },
+  rememberForgot: {
+    width: "100%",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 16,
+  },
+  rememberMe: {
+    fontSize: 12,
+    color: "#555",
+  },
+  forgotPassword: {
+    fontSize: 12,
+    color: "#007BFF",
+  },
+  loginButton: {
+    backgroundColor: "#e37508",
+    width: "100%",
+    padding: 14,
+    borderRadius: 8,
+    alignItems: "center",
+    marginBottom: 16,
+  },
+  loginButtonText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  signupContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  signupText: {
+    color: "#007BFF",
   },
 });
-
-export default LoginScreen;
