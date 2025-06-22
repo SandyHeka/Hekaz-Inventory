@@ -36,7 +36,7 @@ export default function LoginScreen() {
     try {
       if (email && password) {
         await login(email, password);
-        router.replace("/home");
+        router.replace("/(tabs)/home");
       } else {
         setError("Please enter email and password");
       }

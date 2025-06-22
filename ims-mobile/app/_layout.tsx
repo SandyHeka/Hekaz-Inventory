@@ -1,6 +1,7 @@
 import { Stack, Tabs } from "expo-router";
 import { AuthProvider, useAuth } from "../context/AuthContext";
 import { View, ActivityIndicator } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 
 function RootLayoutInner() {
   const { token, loading } = useAuth();
@@ -17,28 +18,73 @@ function RootLayoutInner() {
     // No token — show auth stack
     return (
       <Stack screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="auth/login" />
-        <Stack.Screen name="auth/register" />
+        <Stack.Screen name="(auth)/login" />
+        <Stack.Screen name="(auth)/register" />
       </Stack>
-    );
-  } else {
-    return (
-      <Tabs
-        screenOptions={{
-          headerShown: true,
-          tabBarActiveTintColor: "#e37508",
-        }}
-      >
-        <Tabs.Screen name="home" options={{ title: "Dashboard" }} />
-        <Tabs.Screen name="products" options={{ title: "Products" }} />
-        <Tabs.Screen name="orders" options={{ title: "Orders" }} />
-        <Tabs.Screen name="more" options={{ title: "More" }} />
-      </Tabs>
     );
   }
 
   // Has token — show Tabs
-  return <Tabs screenOptions={{ headerShown: false }} />;
+  return (
+    <Tabs
+      screenOptions={{
+        headerShown: true,
+        headerStyle: {
+          backgroundColor: "#e37508",
+        },
+        headerTintColor: "#fff",
+        headerTitleStyle: {
+          fontWeight: "bold",
+        },
+        tabBarActiveTintColor: "#e37508",
+        tabBarInactiveTintColor: "#999",
+        tabBarStyle: {
+          backgroundColor: "#fff",
+        },
+      }}
+    >
+      <Tabs.Screen
+        name="(tabs)/home"
+        options={{
+          title: "Dashboard",
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="home-outline" color={color} size={size} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="(tabs)/products"
+        options={{
+          title: "Products",
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="cart-outline" color={color} size={size} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="(tabs)/orders"
+        options={{
+          title: "Orders",
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="cube-outline" color={color} size={size} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="(tabs)/more"
+        options={{
+          title: "More",
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons
+              name="ellipsis-horizontal-circle-outline"
+              color={color}
+              size={size}
+            />
+          ),
+        }}
+      />
+    </Tabs>
+  );
 }
 
 export default function RootLayout() {
