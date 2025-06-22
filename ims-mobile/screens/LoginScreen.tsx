@@ -7,6 +7,8 @@ import {
   SafeAreaView,
   Image,
   TouchableOpacity,
+  KeyboardAvoidingView,
+  Platform,
 } from "react-native";
 import { Entypo } from "@expo/vector-icons";
 import { useAuth } from "../context/AuthContext";
@@ -21,10 +23,20 @@ export default function LoginScreen() {
   const [error, setError] = useState("");
 
   const handleLogin = async () => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!email || !emailRegex.test(email)) {
+      setError("Please enter a valid email address");
+      return;
+    }
+
+    if (!password || password.length < 6) {
+      setError("Password must be at least 6 characters");
+      return;
+    }
     try {
       if (email && password) {
         await login(email, password);
-        router.replace("/(tabs)/index");
+        router.replace("/home");
       } else {
         setError("Please enter email and password");
       }
@@ -34,7 +46,10 @@ export default function LoginScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+    >
       <Image
         source={require("../assets/images/white.png")}
         style={styles.logo}
@@ -79,7 +94,7 @@ export default function LoginScreen() {
             <Text style={styles.forgotPassword}>Forgot Password?</Text>
           </TouchableOpacity>
         </View>
-
+        {error ? <Text style={styles.error}>{error}</Text> : null}
         <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
           <Text style={styles.loginButtonText}>Log In</Text>
         </TouchableOpacity>
@@ -91,7 +106,7 @@ export default function LoginScreen() {
           </TouchableOpacity>
         </View>
       </View>
-    </SafeAreaView>
+    </KeyboardAvoidingView>
   );
 }
 
@@ -125,6 +140,11 @@ const styles = StyleSheet.create({
     color: "#777",
     marginBottom: 16,
     textAlign: "center",
+  },
+  error: {
+    fontSize: 12,
+    color: "red",
+    marginBottom: 10,
   },
   input: {
     width: "100%",

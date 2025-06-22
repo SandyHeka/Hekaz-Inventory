@@ -2,16 +2,16 @@ import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import API from "../api/axios";
 import invImage from "../assets/inventory.jpg";
-import { Link,  useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const RegisterPage = () => {
   const { login } = useAuth();
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     email: "",
-    password:"",
-    name:"",
-    phone:""
+    password: "",
+    name: "",
+    phone: "",
   });
   const [error, setError] = useState("");
 
@@ -43,18 +43,21 @@ const RegisterPage = () => {
               placeholder="Email"
               className="w-full border border-gray-300 p-2 rounded"
               value={formData.email}
-              onChange={(e) =>setFormData({ ...formData, [e.target.name]: e.target.value })
-  }
+              onChange={(e) =>
+                setFormData({ ...formData, [e.target.name]: e.target.value })
+              }
               required
             />
-    
+
             <input
               type="password"
               placeholder="Password"
               name="password"
               className="w-full border border-gray-300 p-2 rounded"
               value={formData.password}
-              onChange={(e) => setFormData({...formData, [e.target.name] : e.target.value})}
+              onChange={(e) =>
+                setFormData({ ...formData, [e.target.name]: e.target.value })
+              }
               required
             />
             <input
@@ -63,17 +66,21 @@ const RegisterPage = () => {
               name="name"
               className="w-full border border-gray-300 p-2 rounded"
               value={formData.name}
-              onChange={(e) => setFormData({...formData, [e.target.name] : e.target.value})}
+              onChange={(e) =>
+                setFormData({ ...formData, [e.target.name]: e.target.value })
+              }
               required
             />
-           
-             <input
+
+            <input
               type="number"
               placeholder="Phone"
               name="phone"
               className="w-full border border-gray-300 p-2 rounded"
               value={formData.phone}
-              onChange={(e) => setFormData({...formData, [e.target.name] : e.target.value})}
+              onChange={(e) =>
+                setFormData({ ...formData, [e.target.name]: e.target.value })
+              }
               required
             />
             <p className="text-sm text-center text-gray-600">

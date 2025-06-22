@@ -21,6 +21,20 @@ function RootLayoutInner() {
         <Stack.Screen name="auth/register" />
       </Stack>
     );
+  } else {
+    return (
+      <Tabs
+        screenOptions={{
+          headerShown: true,
+          tabBarActiveTintColor: "#e37508",
+        }}
+      >
+        <Tabs.Screen name="home" options={{ title: "Dashboard" }} />
+        <Tabs.Screen name="products" options={{ title: "Products" }} />
+        <Tabs.Screen name="orders" options={{ title: "Orders" }} />
+        <Tabs.Screen name="more" options={{ title: "More" }} />
+      </Tabs>
+    );
   }
 
   // Has token — show Tabs

@@ -1,11 +1,14 @@
 import { View } from "@/components/Themed";
+import { useAuth } from "@/context/AuthContext";
 import { Entypo } from "@expo/vector-icons";
-import axios from "axios";
-import { useRouter } from "expo-router";
+import axios from "../services/api";
+import { useNavigation, useRouter } from "expo-router";
 import { useState } from "react";
 import {
   Button,
   Image,
+  KeyboardAvoidingView,
+  Platform,
   SafeAreaView,
   StyleSheet,
   Text,
@@ -15,21 +18,56 @@ import {
 
 const RegisterScreen = () => {
   const router = useRouter();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [name, setName] = useState("");
-  const [phone, setPhone] = useState("");
+
+  const { login } = useAuth();
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+    name: "",
+    phone: "",
+  });
+
   const [error, setError] = useState("");
   const [hidePassword, setHidePassword] = useState(true);
   const handleRegister = async () => {
+    // Validate fields
+    if (!formData.name) {
+      setError("Name is required");
+      return;
+    }
+
+    if (!formData.phone || formData.phone.length < 10) {
+      setError("Phone number must be at least 10 digits");
+      return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!formData.email || !emailRegex.test(formData.email)) {
+      setError("Please enter a valid email address");
+      return;
+    }
+
+    if (!formData.password || formData.password.length < 6) {
+      setError("Password must be at least 6 characters");
+      return;
+    }
     try {
-      await axios.post("/auth/register", { email, password, name });
+      const res = await axios.post("/auth/register", formData);
+      await axios.post("/auth/login", {
+        email: formData.email,
+        password: formData.password,
+      });
+      login(formData.email, formData.password); // Your normal login function
+      router.replace("/home");
     } catch (err) {
-      setError("failed to register");
+      setError("Failed to register");
     }
   };
   return (
-    <SafeAreaView style={styles.container}>
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+    >
       <Image
         source={require("../assets/images/white.png")}
         style={styles.logo}
@@ -38,25 +76,10 @@ const RegisterScreen = () => {
         <Text style={styles.title}>Register</Text>
 
         <TextInput
-          style={[styles.input, { color: "black" }]}
-          placeholder="Name"
-          placeholderTextColor="black"
-          value={name}
-          onChangeText={setName}
-          autoCapitalize="none"
-        />
-        <TextInput
-          placeholder="Phone"
-          value={phone}
-          placeholderTextColor="black"
-          onChangeText={setPhone}
-          style={styles.input}
-        />
-        <TextInput
           placeholder="Email"
-          value={email}
+          value={formData.email}
           placeholderTextColor="black"
-          onChangeText={setEmail}
+          onChangeText={(text) => setFormData({ ...formData, email: text })}
           keyboardType="email-address"
           autoCapitalize="none"
           style={styles.input}
@@ -65,8 +88,11 @@ const RegisterScreen = () => {
           <TextInput
             style={styles.passwordInput}
             placeholder="Password"
-            value={password}
-            onChangeText={setPassword}
+            value={formData.password}
+            placeholderTextColor="black"
+            onChangeText={(text) =>
+              setFormData({ ...formData, password: text })
+            }
             secureTextEntry={hidePassword}
           />
           <TouchableOpacity onPress={() => setHidePassword(!hidePassword)}>
@@ -78,7 +104,28 @@ const RegisterScreen = () => {
           </TouchableOpacity>
         </View>
 
-        <TouchableOpacity style={styles.loginButton}>
+        <TextInput
+          style={[styles.input, { color: "black" }]}
+          placeholder="Name"
+          placeholderTextColor="black"
+          value={formData.name}
+          onChangeText={(text) => setFormData({ ...formData, name: text })}
+          autoCapitalize="none"
+        />
+        <TextInput
+          placeholder="Phone"
+          value={formData.phone}
+          placeholderTextColor="black"
+          keyboardType="numeric"
+          onChangeText={(text) => {
+            // Remove all non-numeric chars
+            const onlyNumbers = text.replace(/[^0-9]/g, "");
+            setFormData({ ...formData, phone: onlyNumbers });
+          }}
+          style={styles.input}
+        />
+        {error ? <Text style={styles.error}>{error}</Text> : null}
+        <TouchableOpacity style={styles.loginButton} onPress={handleRegister}>
           <Text style={styles.loginButtonText}>Register</Text>
         </TouchableOpacity>
 
@@ -89,7 +136,7 @@ const RegisterScreen = () => {
           </TouchableOpacity>
         </View>
       </View>
-    </SafeAreaView>
+    </KeyboardAvoidingView>
   );
 };
 
@@ -112,6 +159,11 @@ const styles = StyleSheet.create({
     width: 120,
     height: 80,
     marginBottom: 16,
+  },
+  error: {
+    fontSize: 12,
+    color: "red",
+    marginBottom: 10,
   },
   title: {
     fontSize: 28,
