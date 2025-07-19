@@ -6,7 +6,8 @@ export type Product = {
   brand: string;
   dealer: string;
   price: number;
-  quantity: number;
+  currentStock: number; // ✅ replaces old `quantity`
+  lowStockThreshold: number; // ✅ for alerting
   barcode: string;
   imageUrl?: string;
 };

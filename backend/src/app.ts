@@ -5,6 +5,7 @@ import productRoutes from "./routes/product.routes";
 import categoryRoutes from "./routes/category.routes";
 import brandRoutes from "./routes/brand.routes";
 import dealerRoutes from "./routes/dealer.routes";
+import inventoryRoutes from "./routes/inventory.routes";
 const app = express();
 
 app.use(cors());
@@ -14,6 +15,7 @@ app.use("/api/products", productRoutes);
 app.use("/api/category", categoryRoutes);
 app.use("/api/brands", brandRoutes);
 app.use("/api/dealers", dealerRoutes);
+app.use("/api/inventory", inventoryRoutes);
 app.use("/uploads", express.static("uploads"));
 app.get("/api/health", (_req, res) => {
   res.status(200).json({ message: "API is healthy 🚀" });

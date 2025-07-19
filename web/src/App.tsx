@@ -9,6 +9,8 @@ import PublicRoute from "./routes/PublicRoute";
 import CategoryPage from "./pages/CategoryPage";
 import BrandPage from "./pages/BrandPage";
 import DealerPage from "./pages/DealerPage";
+import InventoryPage from "./pages/InventoryPage";
+import PrivateRoute from "./routes/PrivateRoute";
 
 function App() {
   return (
@@ -61,6 +63,14 @@ function App() {
             <PublicRoute>
               <DealerPage />
             </PublicRoute>
+          }
+        />
+        <Route
+          path="/inventory"
+          element={
+            <PrivateRoute>
+              <InventoryPage />
+            </PrivateRoute>
           }
         />
         <Route

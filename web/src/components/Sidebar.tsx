@@ -79,6 +79,10 @@ const Sidebar = ({
           <GiBrandyBottle size={20} />
           {!collapsed && <span className="text-lg">Brand</span>}
         </Link>
+        <Link to="/inventory" className="flex items-center gap-3">
+          <GiBrandyBottle size={20} />
+          {!collapsed && <span className="text-lg">Inventory</span>}
+        </Link>
       </nav>
     </aside>
   );

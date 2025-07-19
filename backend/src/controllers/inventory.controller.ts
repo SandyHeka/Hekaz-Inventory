@@ -5,7 +5,7 @@ import { StockLog } from "../models/SockLog";
 export const stockIn = async (req: Request, res: Response) => {
   try {
     const { productId, quantity, note } = req.body;
-    const userId = req.user._id;
+    const userId = req.user?._id;
     if (!productId || quantity <= 0)
       return res.status(400).json({ error: "Invalid input" });
 
