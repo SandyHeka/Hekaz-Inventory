@@ -13,6 +13,8 @@ import { Menu, Transition } from "@headlessui/react";
 import { useAuth } from "../context/AuthContext";
 import Modal from "./Modal";
 import API from "../api/axios";
+import { useNavigate } from "react-router-dom";
+
 const Topbar = ({ onMobileToggle }: { onMobileToggle: () => void }) => {
   const [darkMode, setDarkMode] = useState(false);
   const { user, token, logout } = useAuth();
@@ -21,7 +23,7 @@ const Topbar = ({ onMobileToggle }: { onMobileToggle: () => void }) => {
   const [newPassword, setNewPassword] = useState("");
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
-
+  const navigate = useNavigate();
   useEffect(() => {
     document.documentElement.classList.toggle("dark", darkMode);
   }, [darkMode]);
@@ -99,7 +101,19 @@ const Topbar = ({ onMobileToggle }: { onMobileToggle: () => void }) => {
                     </button>
                   )}
                 </Menu.Item>
-
+                <Menu.Item>
+                  {({ active }) => (
+                    <button
+                      className={`${
+                        active ? "bg-gray-100 dark:bg-gray-700" : ""
+                      } group flex w-full items-center rounded-md px-4 py-2 text-sm text-gray-700 dark:text-gray-200`}
+                      onClick={() => navigate("/2fa/setup")}
+                    >
+                      <Key className="mr-2" size={16} />
+                      Enable Two-Factor
+                    </button>
+                  )}
+                </Menu.Item>
                 {user ? (
                   <Menu.Item>
                     {({ active }) => (

@@ -7,11 +7,12 @@ import {
   updateDealer,
 } from "../controllers/dealer.controller";
 import { upload } from "../middleware/upload";
+import { requireAuth } from "../middleware/requireAuth";
 const router = express.Router();
-router.post("/", upload.none(), createDealer);
-router.get("/", getAllDealer);
-router.get("/:id", getDealerById);
-router.put("/:id", updateDealer);
-router.delete("/:id", deleteDealer);
+router.post("/", upload.none(), requireAuth, createDealer);
+router.get("/", requireAuth, getAllDealer);
+router.get("/:id", requireAuth, getDealerById);
+router.put("/:id", requireAuth, updateDealer);
+router.delete("/:id", requireAuth, deleteDealer);
 
 export default router;

@@ -11,6 +11,8 @@ import BrandPage from "./pages/BrandPage";
 import DealerPage from "./pages/DealerPage";
 import InventoryPage from "./pages/InventoryPage";
 import PrivateRoute from "./routes/PrivateRoute";
+import TwoFactorSetupPage from "./pages/TwoFactorSetupPage";
+import Verify2FAPage from "./pages/Verify2FAPage";
 
 function App() {
   return (
@@ -32,37 +34,38 @@ function App() {
             </PublicRoute>
           }
         />
-
+        <Route path="/2fa/setup" element={<TwoFactorSetupPage />} />
+        <Route path="/2fa/verify" element={<Verify2FAPage />} />
         <Route
           path="/products"
           element={
-            <PublicRoute>
+            <PrivateRoute>
               <ProductListPage />
-            </PublicRoute>
+            </PrivateRoute>
           }
         />
         <Route
           path="/category"
           element={
-            <PublicRoute>
+            <PrivateRoute>
               <CategoryPage />
-            </PublicRoute>
+            </PrivateRoute>
           }
         />
         <Route
           path="/brand"
           element={
-            <PublicRoute>
+            <PrivateRoute>
               <BrandPage />
-            </PublicRoute>
+            </PrivateRoute>
           }
         />
         <Route
           path="/dealer"
           element={
-            <PublicRoute>
+            <PrivateRoute>
               <DealerPage />
-            </PublicRoute>
+            </PrivateRoute>
           }
         />
         <Route
@@ -76,9 +79,9 @@ function App() {
         <Route
           path="/"
           element={
-            <PublicRoute>
+            <PrivateRoute>
               <DashboardPage>{""}</DashboardPage>
-            </PublicRoute>
+            </PrivateRoute>
           }
         />
       </Routes>

@@ -16,8 +16,14 @@ const LoginPage = () => {
     setError("");
     try {
       const res = await API.post("/auth/login", { email, password });
-      login(res.data.token);
-      navigate("/");
+      if (res.data.requires2FA) {
+        localStorage.setItem("tempToken", res.data.tempToken); // ✅ Save temp token
+        navigate("/2fa/verify");
+        return;
+      } else {
+        login(res.data.token);
+        navigate("/");
+      }
     } catch (err: any) {
       setError(err.response?.data?.error || "Login failed");
     }
@@ -47,6 +53,7 @@ const LoginPage = () => {
               onChange={(e) => setPassword(e.target.value)}
               required
             />
+
             <p className="text-sm text-center text-gray-600">
               Don’t have an account?{" "}
               <Link to="/register" className="text-blue-600 underline">

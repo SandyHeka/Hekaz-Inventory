@@ -8,12 +8,13 @@ import {
   getBrandById,
   updateBrand,
 } from "../controllers/brand.controller";
+import { requireAuth } from "../middleware/requireAuth";
 const router = express.Router();
 
-router.post("/", upload.single("image"), createBrand);
-router.get("/", getAllBrand);
-router.get("/:id", getBrandById);
-router.put("/:id", upload.single("image"), updateBrand);
-router.delete("/:id", deleteBrand);
+router.post("/", upload.single("image"), requireAuth, createBrand);
+router.get("/", requireAuth, getAllBrand);
+router.get("/:id", requireAuth, getBrandById);
+router.put("/:id", upload.single("image"), requireAuth, updateBrand);
+router.delete("/:id", requireAuth, deleteBrand);
 
 export default router;
