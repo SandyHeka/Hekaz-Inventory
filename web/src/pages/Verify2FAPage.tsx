@@ -44,7 +44,10 @@ const Verify2FAPage = () => {
             value={token}
             onChange={(e) => setToken(e.target.value)}
           />
-          <button className="w-full bg-[#c16e02] text-white py-2 rounded-md hover:bg-[#a5793f] transition">
+          <button
+            className="w-full bg-[#c16e02] text-white py-2 rounded-md hover:bg-[#a5793f] transition"
+            onClick={handleVerify}
+          >
             Verify
           </button>
         </div>
