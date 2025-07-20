@@ -119,13 +119,13 @@ export const verify2FA = async (req: Request, res: Response) => {
     if (!user || !user.twoFactorSecret)
       return res.status(400).json({ error: "Invalid or expired token" });
 
-    const isValid = speakeasy.totp.verifyDelta({
+    const isValid = speakeasy.totp.verify({
       secret: user.twoFactorSecret,
       encoding: "base32",
       token: userToken,
       window: 2, // ← Increase this if codes don't match
     });
-    console.log("Verify result:", isValid);
+
     if (!isValid) return res.status(401).json({ error: "Invalid 2FA code" });
 
     const authToken = generateToken(user);
