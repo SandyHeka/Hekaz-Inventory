@@ -8,6 +8,7 @@ import DashboardPage from "./DasboardPage";
 import ToastMessage from "../components/ToastMessage";
 import Pagination from "../components/Pagination";
 import StockInModal from "../components/Inventory/StockInModal";
+import StockOutModal from "../components/Inventory/StockOutModal";
 
 const InventoryPage = () => {
   const [products, setProducts] = useState<Product[]>([]);
@@ -93,6 +94,23 @@ const InventoryPage = () => {
                     fetchProducts();
                     setMessage("Stock addedd successfully");
                     setStockInOpen(false);
+                    setSelectedProduct(null);
+                  }}
+                  onError={(msg) => setError(msg)}
+                />
+              )}
+              {selectedProduct && (
+                <StockOutModal
+                  isOpen={stockOutOpen}
+                  product={selectedProduct}
+                  onClose={() => {
+                    setStockOutOpen(false);
+                    setSelectedProduct(null);
+                  }}
+                  onSuccess={() => {
+                    fetchProducts();
+                    setMessage("Stock removed successfully");
+                    setStockOutOpen(false);
                     setSelectedProduct(null);
                   }}
                   onError={(msg) => setError(msg)}
