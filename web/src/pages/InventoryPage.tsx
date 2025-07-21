@@ -12,7 +12,7 @@ import StockInModal from "../components/Inventory/StockInModal";
 const InventoryPage = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
-  const [message, setMessage] = useState("null");
+  const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   const [totalPages, setTotalPages] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
