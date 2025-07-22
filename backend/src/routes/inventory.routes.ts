@@ -1,11 +1,15 @@
 import express from "express";
 import { requireAuth } from "../middleware/requireAuth";
-import { stockIn, stockOut } from "../controllers/inventory.controller";
+import {
+  adjustStock,
+  stockIn,
+  stockOut,
+} from "../controllers/inventory.controller";
 const router = express.Router();
 
 router.post("/in", requireAuth, stockIn);
 router.post("/out", requireAuth, stockOut);
-// router.post("/adjust", requireAuth, requireRole("admin"), adjustStock);
+router.post("/adjust", requireAuth, adjustStock);
 // router.get("/low-stock", requireAuth, getLowStock);
 
 export default router;
