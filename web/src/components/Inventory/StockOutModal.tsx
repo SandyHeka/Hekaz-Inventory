@@ -15,7 +15,7 @@ const StockOutModal = ({
   isOpen,
   onClose,
   onSuccess,
-}: StockOutModal) => {
+}: StockOutModalProps) => {
   const [quantity, setQuantity] = useState<number>(0);
   const [note, setNote] = useState<string>("");
   const [loading, setLoading] = useState(false);

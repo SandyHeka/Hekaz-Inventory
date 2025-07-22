@@ -33,7 +33,7 @@ const AdjustStockModal = ({
     try {
       await adjustStock({
         productId: product._id,
-        quantity,
+        newQuantity: quantity,
         note,
       });
       setMessage("Stock Adjustment Succesful");
