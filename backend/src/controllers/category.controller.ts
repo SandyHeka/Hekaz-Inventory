@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { Category } from "../models/Category";
+import { Product } from "../models/Product";
 
 export const createCategory = async (req: Request, res: Response) => {
   try {
@@ -58,7 +59,15 @@ export const updateCategory = async (req: Request, res: Response) => {
 
 export const deleteCategory = async (req: Request, res: Response) => {
   try {
-    const deleteCategory = await Category.findByIdAndDelete(req.params.id);
+    const categoryId = req.params.id;
+    const usedInProducts = await Product.findById({ catgegory: categoryId });
+    if (usedInProducts) {
+      return res.status(400).json({
+        error: "Cannot delete: Catgeory is associated with existing products.",
+      });
+    }
+
+    const deleteCategory = await Category.findByIdAndDelete(categoryId);
     if (!deleteCategory)
       return res.status(404).json({ error: "Category not found" });
     res.json({ message: "Category deleted" });

@@ -17,7 +17,7 @@ const AddProductForm = ({ existingProduct = null, onSuccess }: Props) => {
     dealer: existingProduct?.dealer || "",
     brand: existingProduct?.brand || "",
     price: existingProduct?.price?.toString() || "",
-    quantity: existingProduct?.quantity?.toString() || "",
+    currentStock: existingProduct?.currentStock?.toString() || "",
     barcode: existingProduct?.barcode || generateBarcode(),
   });
   const [categories, setCategories] = useState<{ _id: string; name: string }[]>(
@@ -78,7 +78,7 @@ const AddProductForm = ({ existingProduct = null, onSuccess }: Props) => {
             ? existingProduct.brand._id
             : existingProduct.brand || "",
         price: existingProduct?.price?.toString() || "",
-        quantity: existingProduct?.quantity?.toString() || "",
+        currentStock: existingProduct?.currentStock?.toString() || "",
         barcode: existingProduct?.barcode || generateBarcode(),
       });
     }
@@ -130,7 +130,7 @@ const AddProductForm = ({ existingProduct = null, onSuccess }: Props) => {
         dealer: "",
         brand: "",
         price: "",
-        quantity: "",
+        currentStock: "",
         barcode: generateBarcode(),
       });
       setImage(null);
@@ -206,8 +206,8 @@ const AddProductForm = ({ existingProduct = null, onSuccess }: Props) => {
 
       <input
         type="number"
-        name="quantity"
-        value={form.quantity}
+        name="currentStock"
+        value={form.currentStock}
         onChange={handleChange}
         placeholder="Quantity"
         className="w-full p-2 border rounded dark:bg-gray-700 dark:text-white"

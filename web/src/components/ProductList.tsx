@@ -67,7 +67,7 @@ const ProductList = ({ products, onDelete, onEdit }: Props) => {
                 {product.price}
               </td>
               <td className="px-4 py-2 text-gray-800 dark:text-gray-50">
-                {product.quantity}
+                {product.currentStock}
               </td>
               <td className="px-4 py-2 text-gray-800 dark:text-gray-50">
                 {product.barcode}

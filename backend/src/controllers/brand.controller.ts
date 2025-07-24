@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { Brand } from "../models/Brand";
 import path from "path";
 import fs from "fs";
+import { Product } from "../models/Product";
 export const createBrand = async (req: Request, res: Response) => {
   try {
     const { name, status = "active" } = req.body;
@@ -88,7 +89,15 @@ export const updateBrand = async (req: Request, res: Response) => {
 
 export const deleteBrand = async (req: Request, res: Response) => {
   try {
-    const deleted = await Brand.findByIdAndDelete(req.params.id);
+    const brandId = req.params.id;
+    const usedInProducts = await Product.findById({ brand: brandId });
+    if (usedInProducts) {
+      return res.status(400).json({
+        error: "Cannot delete: Brand is associated with existing products.",
+      });
+    }
+    const deleted = await Brand.findByIdAndDelete(brandId);
+
     if (!deleted) return res.status(404).json({ error: "Brand not found" });
     res.json({ message: "Brand deleted" });
   } catch (err) {

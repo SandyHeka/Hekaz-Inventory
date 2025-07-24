@@ -6,6 +6,7 @@ import ProductList from "../components/ProductList";
 import type { Product } from "../types/ProductTypes";
 import ConfirmDialog from "../components/ConfirmDialog";
 import Pagination from "../components/Pagination";
+import ToastMessage from "../components/ToastMessage";
 
 const ProductListPage = () => {
   const [products, setProducts] = useState<Product[]>([]);
@@ -58,7 +59,8 @@ const ProductListPage = () => {
       <h2 className="text-2xl font-bold mb-6 text-gray-800 dark:text-gray-50">
         Product Management
       </h2>
-
+      {message && <ToastMessage message={message} type="success" />}
+      {error && <ToastMessage message={error} type="error" />}
       <div className="flex flex-col md:flex-row gap-4">
         <div className="w-full md:w-1/3 bg-white dark:bg-gray-800 p-4 rounded shadow">
           <AddProductForm

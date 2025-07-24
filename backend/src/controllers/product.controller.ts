@@ -5,12 +5,12 @@ import path from "path";
 // CREATE
 export const createProduct = async (req: Request, res: Response) => {
   try {
-    const { name, quantity, price, category, brand, dealer, barcode } =
+    const { name, currentStock, price, category, brand, dealer, barcode } =
       req.body;
 
     if (
       !name ||
-      !quantity ||
+      !currentStock ||
       !price ||
       !category ||
       !brand ||
@@ -23,7 +23,7 @@ export const createProduct = async (req: Request, res: Response) => {
     const imageUrl = req.file ? `/uploads/${req.file.filename}` : undefined;
     const product = await Product.create({
       name,
-      quantity,
+      currentStock,
       price,
       category,
       brand,
