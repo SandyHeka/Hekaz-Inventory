@@ -1,12 +1,18 @@
 import { useEffect, useState } from "react";
-import API from "../api/axios";
 import DashboardLayout from "./DasboardPage";
-import AddProductForm from "../components/AddProductForm";
-import ProductList from "../components/ProductList";
+import AddProductForm from "../components/Product/AddProductForm";
+
 import type { Product } from "../types/ProductTypes";
 import ConfirmDialog from "../components/ConfirmDialog";
 import Pagination from "../components/Pagination";
 import ToastMessage from "../components/ToastMessage";
+import {
+  createProduct,
+  deleteProduct,
+  getAllProducts,
+  updateProduct,
+} from "../api/productService";
+import ProductList from "../components/Product/ProductList";
 
 const ProductListPage = () => {
   const [products, setProducts] = useState<Product[]>([]);
@@ -18,17 +24,44 @@ const ProductListPage = () => {
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
+  useEffect(() => {
+    if (message) {
+      const timer = setTimeout(() => {
+        setMessage("");
+      }, 3000); // Hide after 3 seconds
 
+      return () => clearTimeout(timer);
+    }
+  }, [message]);
   const fetchProducts = async (page: number = 1) => {
     try {
-      const res = await API.get(`/products?page=${page}&limit=10`);
-      setProducts(res.data.products);
-      setTotalPages(res.data.totalPage);
-      setCurrentPage(res.data.page);
+      const {
+        products,
+        totalPages,
+        page: currentPage,
+      } = await getAllProducts(page);
+      setProducts(products);
+      setTotalPages(totalPages);
+      setCurrentPage(currentPage);
     } catch (err: any) {
       setError("Failed to fetch products");
     } finally {
       setLoading(false);
+    }
+  };
+  const handleProductSubmit = async (formData: FormData) => {
+    try {
+      if (editingProduct) {
+        await updateProduct(editingProduct._id, formData);
+        setMessage("Product updated successfully");
+      } else {
+        await createProduct(formData);
+        setMessage("Product added successfully");
+      }
+      await fetchProducts();
+      setEditingProduct(null);
+    } catch (err) {
+      setError("Failed to save product");
     }
   };
 
@@ -39,8 +72,7 @@ const ProductListPage = () => {
   const confirmDelete = async () => {
     if (!pendingDeleteId) return;
     try {
-      console.log("delete");
-      await API.delete(`/products/${pendingDeleteId}`);
+      await deleteProduct(pendingDeleteId);
       setProducts((prev) => prev.filter((p) => p._id !== pendingDeleteId));
       setMessage("Product has been deleted");
     } catch {
@@ -65,13 +97,20 @@ const ProductListPage = () => {
         <div className="w-full md:w-1/3 bg-white dark:bg-gray-800 p-4 rounded shadow">
           <AddProductForm
             existingProduct={editingProduct}
+            onSubmit={handleProductSubmit}
             onSuccess={() => {
               fetchProducts();
               setEditingProduct(null);
             }}
           />
         </div>
-        {products && products.length > 0 ? (
+        {loading ? (
+          <div className="md:w-full bg-white dark:bg-gray-800 p-4 rounded shadow overflow-x-auto text-center">
+            <p className="text-gray-600 dark:text-gray-300 text-lg font-medium">
+              Loading products...
+            </p>
+          </div>
+        ) : products && products.length > 0 ? (
           <div className="md:w-full bg-white dark:bg-gray-800 p-4 rounded shadow overflow-x-auto">
             <h3 className="text-lg font-semibold mb-4 text-gray-800 dark:text-gray-50">
               Product List
