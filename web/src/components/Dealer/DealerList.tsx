@@ -59,13 +59,13 @@ const DealerList = ({ dealers, onDelete, onEdit }: Props) => {
             <td className="px-4 py-2 flex gap-2">
               <button
                 onClick={() => onEdit(dealer)}
-                className="flex items-center gap-1 bg-blue-500  hover:bg-blue-700 text-white text-xs px-3 py-3 rounded transition"
+                className="flex items-center gap-1 bg-blue-500 hover:bg-blue-700 text-white text-xs px-3 py-3 rounded transition"
               >
                 <FaEdit />
               </button>
               <button
+                className="flex items-center gap-1 bg-red-500 hover:bg-red-700 text-white text-xs px-3 py-1 rounded transition"
                 onClick={() => onDelete(dealer._id)}
-                className="flex items-center gap-1 bg-red-500  hover:bg-red-700 text-white text-xs px-3 py-3 rounded transition"
               >
                 <FaTrash />
               </button>

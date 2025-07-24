@@ -9,3 +9,4 @@ export type Dealer = {
   owner: string;
   status: StatusType;
 };
+export type DealerFormData = Omit<Dealer, "_id">;

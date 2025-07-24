@@ -3,7 +3,7 @@ import API from "../../api/axios";
 import type { Product } from "../../types/ProductTypes";
 import { getAllCategory } from "../../api/CategoryServices";
 import { getAllBrand } from "../../api/BrandService";
-import { getAllDealer } from "../../api/dealersServices";
+import { getAllDealers } from "../../api/dealersService";
 const generateBarcode = () => {
   return Math.random().toString(36).substring(2, 10).toUpperCase();
 };
@@ -52,7 +52,7 @@ const AddProductForm = ({
     };
     const fetchDealers = async () => {
       try {
-        const res = await getAllDealer();
+        const res = await getAllDealers();
         setDealers(res.dealer || []);
       } catch (error) {
         console.error("Failed to fetch dealers:", error);

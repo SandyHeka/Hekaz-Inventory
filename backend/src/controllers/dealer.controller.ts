@@ -66,7 +66,7 @@ export const updateDealer = async (req: Request, res: Response) => {
 export const deleteDealer = async (req: Request, res: Response) => {
   try {
     const dealerId = req.params.id;
-    const usedInProducts = await Product.findById({ dealer: dealerId });
+    const usedInProducts = await Product.findOne({ dealer: dealerId });
     if (usedInProducts) {
       return res.status(400).json({
         error: "Cannot delete: Dealer is associated with existing products.",

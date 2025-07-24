@@ -1,60 +1,96 @@
-import React, { useEffect, useState } from "react";
-import DashboardPage from "./DasboardPage";
-import ToastMessage from "../components/ToastMessage";
+// pages/DealerListPage.tsx
+import { useEffect, useState } from "react";
+
 import AddDealerForm from "../components/Dealer/AddDealerForm";
-import DealerList from "../components/Dealer/DealerList";
-import type { Dealer } from "../types/DealerTypes";
-import API from "../api/axios";
-import Pagination from "../components/Pagination";
 import ConfirmDialog from "../components/ConfirmDialog";
+import ToastMessage from "../components/ToastMessage";
+
+import type { Dealer, DealerFormData } from "../types/DealerTypes";
+import DashboardPage from "./DasboardPage";
+import {
+  createDealer,
+  deleteDealer,
+  getAllDealers,
+  updateDealer,
+} from "../api/dealersService";
+import DealerList from "../components/Dealer/DealerList";
+import Pagination from "../components/Pagination";
+
 const DealerPage = () => {
-  const [dealer, setDealer] = useState<Dealer[]>([]);
-  const [existingDealer, setExistingDealer] = useState<Dealer | null>(null);
-  const [totalPages, setTotalPages] = useState(1);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [dealers, setDealers] = useState<Dealer[]>([]);
+  const [editingDealer, setEditingDealer] = useState<Dealer | null>(null);
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
-  const [confrimOpen, setConfirmOpen] = useState(false);
-  const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [totalPages, setTotalPages] = useState(1);
+  const [currentPage, setCurrentPage] = useState(1);
 
-  const fetchDealer = async (page: number = 1) => {
+  useEffect(() => {
+    if (message) {
+      const timer = setTimeout(() => {
+        setMessage("");
+      }, 3000); // Hide after 3 seconds
+
+      return () => clearTimeout(timer);
+    }
+  }, [message]);
+
+  const fetchDealers = async () => {
+    setLoading(true);
     try {
-      const res = await API.get(`/dealers?page=${page}&limit=10`);
-      setDealer(res.data.dealer);
-      setTotalPages(res.data.totalPage);
-      setCurrentPage(res.data.page);
-    } catch (err: any) {
-      setError("Failed to fetch catgories");
+      const res = await getAllDealers();
+      setDealers(res.dealer || []);
+
+      setTotalPages(res.totalPage);
+      setCurrentPage(res.page);
+    } catch {
+      setError("Failed to fetch dealers");
+    } finally {
+      setLoading(false);
     }
   };
-  const openCofirmDialog = (id: string) => {
+
+  const handleDealerSubmit = async (form: DealerFormData) => {
+    try {
+      if (editingDealer) {
+        await updateDealer(editingDealer._id, form);
+        setMessage("Dealer updated successfully");
+      } else {
+        await createDealer(form);
+        setMessage("Dealer added successfully");
+      }
+      await fetchDealers();
+      setEditingDealer(null);
+    } catch {
+      setError("Failed to submit dealer");
+    }
+  };
+
+  const openConfirmDialog = (id: string) => {
     setPendingDeleteId(id);
     setConfirmOpen(true);
   };
+
   const confirmDelete = async () => {
+    console.log("⚠️ Attempting to delete dealer ID:", pendingDeleteId);
     if (!pendingDeleteId) return;
     try {
-      await API.delete(`/dealers/${pendingDeleteId}`);
-      setMessage("Delaer has been deleted");
-      setDealer((prev) => prev.filter((deal) => deal._id !== pendingDeleteId));
+      await deleteDealer(pendingDeleteId);
+      setDealers((prev) => prev.filter((d) => d._id !== pendingDeleteId));
+      setMessage("Dealer deleted successfully");
     } catch {
-      alert("Failed to delete dealer");
+      setError("Failed to delete dealer");
     } finally {
       setConfirmOpen(false);
       setPendingDeleteId(null);
     }
   };
+
   useEffect(() => {
-    fetchDealer(currentPage);
-  }, [currentPage]);
-  useEffect(() => {
-    if (message) {
-      const timer = setTimeout(() => {
-        setMessage("");
-      }, 3000);
-      return () => clearTimeout(timer);
-    }
-  }, [message]);
+    fetchDealers();
+  }, []);
 
   return (
     <DashboardPage>
@@ -63,39 +99,53 @@ const DealerPage = () => {
       </h2>
       {message && <ToastMessage message={message} type="success" />}
       {error && <ToastMessage message={error} type="error" />}
+
       <div className="flex flex-col md:flex-row gap-4">
         <div className="w-full md:w-1/3 bg-white dark:bg-gray-800 p-4 rounded shadow">
           <AddDealerForm
-            existingDealer={existingDealer}
+            existingDealer={editingDealer}
+            onSubmit={handleDealerSubmit}
             onSuccess={() => {
-              fetchDealer();
-              setExistingDealer(null);
+              fetchDealers();
+              setEditingDealer(null);
             }}
           />
         </div>
-        <div className="md:w-full bg-white dark:bg-gray-800 p-4 rounded overflow-x-auto">
-          <h3 className="text-lg font-semibold mb-4 text-gray-800 dark:text-gray-50">
-            Dealers
-          </h3>
 
-          {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
-          <DealerList
-            dealers={dealer}
-            onDelete={openCofirmDialog}
-            onEdit={setExistingDealer}
-          />
-          <Pagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            onPageChange={setCurrentPage}
-          />
+        <div className="md:w-full bg-white dark:bg-gray-800 p-4 rounded shadow overflow-x-auto">
+          <h3 className="text-lg font-semibold mb-4 text-gray-800 dark:text-gray-50">
+            Dealer List
+          </h3>
+          {loading ? (
+            <p className="text-gray-600 dark:text-gray-300 text-center">
+              Loading dealers...
+            </p>
+          ) : dealers.length > 0 ? (
+            <div className="md:w-full bg-white dark:bg-gray-800 p-4 rounded shadow overflow-x-auto">
+              <DealerList
+                dealers={dealers}
+                onDelete={openConfirmDialog}
+                onEdit={setEditingDealer}
+              />
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={setCurrentPage}
+              />
+            </div>
+          ) : (
+            <p className="text-gray-500 dark:text-gray-300 text-lg font-medium">
+              No dealers found.
+            </p>
+          )}
         </div>
       </div>
+
       <ConfirmDialog
-        isOpen={confrimOpen}
+        isOpen={confirmOpen}
         onCancel={() => setConfirmOpen(false)}
         onConfirm={confirmDelete}
-        message="Are you sure want to delete this dealer"
+        message="Are you sure you want to delete this dealer?"
       />
     </DashboardPage>
   );
