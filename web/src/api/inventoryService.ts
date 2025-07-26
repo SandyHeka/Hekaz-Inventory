@@ -19,5 +19,6 @@ export const adjustStock = async (payload: StockAdjustmentPayload) => {
 
 export const getLowStockProducts = async (): Promise<Product[]> => {
   const res = await API.get("/inventory/low-stock");
-  return res.data.lowStockThreshold;
+
+  return res.data.lowStockProduct || [];
 };

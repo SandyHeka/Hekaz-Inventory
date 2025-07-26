@@ -1,7 +1,7 @@
 import React from "react";
 type ToastProps = {
   message: string;
-  type?: "success" | "error";
+  type?: "success" | "error" | "warning";
 };
 const ToastMessage = ({ message, type = "success" }: ToastProps) => {
   const bgColor = type === "success" ? "bg-green-500" : "bg-red-500";

@@ -108,7 +108,7 @@ export const getLowStock = async (req: Request, res: Response) => {
   try {
     const lowStockProduct = await Product.find({
       $expr: { $lt: ["$currentStock", "$lowStockThreshold"] },
-    }).select("name cuurentStock lowStockThreshold");
+    }).select("name currentStock lowStockThreshold");
     res.json({ lowStockProduct });
   } catch (err) {
     console.error("Low Stock Check Error: ", err);

@@ -10,6 +10,7 @@ import Pagination from "../components/Pagination";
 import StockInModal from "../components/Inventory/StockInModal";
 import StockOutModal from "../components/Inventory/StockOutModal";
 import AdjustStockModal from "../components/Inventory/AdjustStockModal";
+import LowStockAlertCard from "../components/Inventory/LowStockAlertCard";
 
 const InventoryPage = () => {
   const [products, setProducts] = useState<Product[]>([]);
@@ -78,6 +79,7 @@ const InventoryPage = () => {
                 onStockOut={handleStockOut}
                 onAdjust={handleAdjust}
               />
+              <LowStockAlertCard />
               <Pagination
                 currentPage={currentPage}
                 totalPages={totalPages}
