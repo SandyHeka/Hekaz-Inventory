@@ -5,3 +5,5 @@ export type Category = {
   name: string;
   status: StatusType;
 };
+
+export type CategoryFormData = Omit<Category, "_id">;

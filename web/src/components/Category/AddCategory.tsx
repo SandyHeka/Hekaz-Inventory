@@ -1,15 +1,21 @@
 import { useEffect, useState } from "react";
-import { StatusType } from "../types/StatusTypes";
-import type { Category } from "../types/CategoryTypes";
-import API from "../api/axios";
-import ToastMessage from "./ToastMessage";
+import { StatusType } from "../../types/StatusTypes";
+import type { Category, CategoryFormData } from "../../types/CategoryTypes";
+
+import ToastMessage from "../ToastMessage";
+import API from "../../api/axios";
 
 type Props = {
   existingCategory?: Category | null;
+  onSubmit: (form: CategoryFormData) => Promise<void>;
   onSuccess: () => void;
 };
 
-const AddCategoryForm = ({ existingCategory = null, onSuccess }: Props) => {
+const AddCategoryForm = ({
+  existingCategory = null,
+  onSuccess,
+  onSubmit,
+}: Props) => {
   const [form, setForm] = useState({
     name: existingCategory?.name || "",
     status: existingCategory?.status || StatusType.ACTIVE,
@@ -45,23 +51,13 @@ const AddCategoryForm = ({ existingCategory = null, onSuccess }: Props) => {
     setError("");
 
     try {
-      if (existingCategory) {
-        await API.put(`/category/${existingCategory._id}`, form);
-
-        setMessage("Category updated sucessfully");
-      } else {
-        await API.post("/category", form);
-
-        setMessage(" Category Added Successfully");
-      }
+      await onSubmit(form);
       setForm({
         name: "",
         status: StatusType.ACTIVE,
       });
       onSuccess();
     } catch (err: any) {
-      console.error("Error response:", err.response);
-      console.error("Error message:", err.message);
       setError("Failed to add category");
     } finally {
       setLoading(false);

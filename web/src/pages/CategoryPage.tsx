@@ -1,12 +1,18 @@
 import { useState, useEffect } from "react";
-import AddCategoryForm from "../components/AddCategory";
-import CategoryList from "../components/CategoryList";
-import type { Category } from "../types/CategoryTypes";
+import AddCategoryForm from "../components/Category/AddCategory";
+import CategoryList from "../components/Category/CategoryList";
+import type { Category, CategoryFormData } from "../types/CategoryTypes";
 import DashboardPage from "./DasboardPage";
-import API from "../api/axios";
+
 import ConfirmDialog from "../components/ConfirmDialog";
 import Pagination from "../components/Pagination";
 import ToastMessage from "../components/ToastMessage";
+import {
+  createCategory,
+  deleteCategory,
+  getAllCategory,
+  updateCategory,
+} from "../api/CategoryServices";
 
 const CategoryPage = () => {
   const [category, setCategory] = useState<Category[]>([]);
@@ -22,13 +28,29 @@ const CategoryPage = () => {
 
   const fetchCategory = async (page: number = 1) => {
     try {
-      const res = await API.get(`/category?page=${page}&limit=10`);
-      setCategory(res.data.category);
-      setTotalPages(res.data.totalPage);
-      setCurrentPage(res.data.page);
+      const res = await getAllCategory();
+      setCategory(res.category);
+      setTotalPages(res.totalPage);
+      setCurrentPage(res.page);
     } catch (err: any) {
       console.error(err);
       setError("Failed to fetch categories");
+    }
+  };
+
+  const handleCategorySubmit = async (form: CategoryFormData) => {
+    try {
+      if (existingCategory) {
+        await updateCategory(existingCategory._id, form);
+        setMessage("Category updated successfully");
+      } else {
+        await createCategory(form);
+        setMessage("Category added successfully");
+      }
+      await fetchCategory();
+      setExistingCategory(null);
+    } catch {
+      setError("Failed to submit category");
     }
   };
   const openConfirmDialog = (id: string) => {
@@ -40,7 +62,7 @@ const CategoryPage = () => {
 
     try {
       console.log(pendingDeleteId);
-      await API.delete(`/category/${pendingDeleteId}`);
+      await deleteCategory(pendingDeleteId);
       setMessage("Category has been deleted");
       setCategory((prev) => prev.filter((cat) => cat._id !== pendingDeleteId));
     } catch {
@@ -74,6 +96,7 @@ const CategoryPage = () => {
         <div className="w-full md:w-1/3 bg-white dark:bg-gray-800 p-4 rounded shadow">
           <AddCategoryForm
             existingCategory={existingCategory}
+            onSubmit={handleCategorySubmit}
             onSuccess={() => {
               fetchCategory();
               setExistingCategory(null);

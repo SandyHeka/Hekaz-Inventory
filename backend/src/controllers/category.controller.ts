@@ -60,7 +60,7 @@ export const updateCategory = async (req: Request, res: Response) => {
 export const deleteCategory = async (req: Request, res: Response) => {
   try {
     const categoryId = req.params.id;
-    const usedInProducts = await Product.findById({ catgegory: categoryId });
+    const usedInProducts = await Product.findOne({ catgegory: categoryId });
     if (usedInProducts) {
       return res.status(400).json({
         error: "Cannot delete: Catgeory is associated with existing products.",

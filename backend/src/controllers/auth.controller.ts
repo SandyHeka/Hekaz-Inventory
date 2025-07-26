@@ -44,12 +44,12 @@ export const login = async (req: Request, res: Response): Promise<Response> => {
     if (!match) {
       return res.status(401).json({ error: "Incorrect password" });
     }
-    if (user.twoFactorEnabled) {
-      const tempToken = jwt.sign({ id: user._id }, process.env.JWT_SECRET!, {
-        expiresIn: "5m", // short-lived
-      });
-      return res.status(200).json({ requires2FA: true, tempToken });
-    }
+    // if (user.twoFactorEnabled) {
+    //   const tempToken = jwt.sign({ id: user._id }, process.env.JWT_SECRET!, {
+    //     expiresIn: "5m", // short-lived
+    //   });
+    //   return res.status(200).json({ requires2FA: true, tempToken });
+    // }
     const token = generateToken(user);
     return res.status(200).json({ token });
   } catch (err) {
@@ -123,7 +123,7 @@ export const verify2FA = async (req: Request, res: Response) => {
       secret: user.twoFactorSecret,
       encoding: "base32",
       token: userToken,
-      window: 2, // ← Increase this if codes don't match
+      window: 1, // ← Increase this if codes don't match
     });
 
     if (!isValid) return res.status(401).json({ error: "Invalid 2FA code" });
