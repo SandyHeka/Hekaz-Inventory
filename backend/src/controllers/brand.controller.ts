@@ -90,7 +90,7 @@ export const updateBrand = async (req: Request, res: Response) => {
 export const deleteBrand = async (req: Request, res: Response) => {
   try {
     const brandId = req.params.id;
-    const usedInProducts = await Product.findById({ brand: brandId });
+    const usedInProducts = await Product.findOne({ brand: brandId });
     if (usedInProducts) {
       return res.status(400).json({
         error: "Cannot delete: Brand is associated with existing products.",

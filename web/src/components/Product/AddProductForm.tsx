@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import API from "../../api/axios";
 import type { Product } from "../../types/ProductTypes";
 import { getAllCategory } from "../../api/CategoryServices";
 import { getAllBrand } from "../../api/BrandService";
@@ -45,7 +44,8 @@ const AddProductForm = ({
     const fetchBrands = async () => {
       try {
         const res = await getAllBrand();
-        setBrands(res.brand || []);
+
+        setBrands(res.brands || []);
       } catch (error) {
         console.error("failed to fetch catgeories:", error);
       }

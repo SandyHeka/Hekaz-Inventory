@@ -7,8 +7,9 @@ import ToastMessage from "../ToastMessage";
 type Props = {
   editingBrand?: Brand | null;
   onSuccess: () => void;
+  onSubmit: (formData: FormData) => Promise<void>;
 };
-const AddBrandForm = ({ editingBrand = null, onSuccess }: Props) => {
+const AddBrandForm = ({ editingBrand = null, onSuccess, onSubmit }: Props) => {
   const [form, setForm] = useState({
     name: editingBrand?.name || "",
     status: editingBrand?.status || StatusType.ACTIVE,
@@ -25,6 +26,15 @@ const AddBrandForm = ({ editingBrand = null, onSuccess }: Props) => {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
+  useEffect(() => {
+    if (message) {
+      const timer = setTimeout(() => {
+        setMessage("");
+      }, 3000); // Hide after 3 seconds
+
+      return () => clearTimeout(timer);
+    }
+  }, [message]);
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
@@ -43,19 +53,7 @@ const AddBrandForm = ({ editingBrand = null, onSuccess }: Props) => {
       if (image) {
         formData.append("image", image);
       }
-      if (editingBrand) {
-        await API.put(`/brands/${editingBrand._id}`, formData, {
-          headers: { "Content-Type": "multipart/form-data" },
-        });
-        console.log("Submitting form:  ", form);
-        setMessage("Brand updated Successfully");
-      } else {
-        await API.post("/brands", formData, {
-          headers: { "Content-type": "multipart/form-data" },
-        });
-
-        setMessage("Brand addedd successfully");
-      }
+      await onSubmit(formData);
       setForm({
         name: "",
         status: StatusType.ACTIVE,

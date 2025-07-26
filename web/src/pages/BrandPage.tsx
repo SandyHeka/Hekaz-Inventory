@@ -2,11 +2,13 @@ import React, { useEffect, useState } from "react";
 import DashboardLayout from "./DasboardPage";
 import AddBrandForm from "../components/Brand/AddBrandForm";
 import BrandList from "../components/Brand/BrandList";
-import type { Brand } from "../../types/BrandTypes";
+import type { Brand } from "../types/BrandTypes";
 import API from "../api/axios";
 import Pagination from "../components/Pagination";
 import ConfirmDialog from "../components/ConfirmDialog";
 import ToastMessage from "../components/ToastMessage";
+
+import { createBrand, deleteBrand, updateBrand } from "../api/BrandService";
 const BrandPage = () => {
   const [brands, setBrands] = useState<Brand[]>([]);
   const [editingBrand, setEditingBrand] = useState<Brand | null>(null);
@@ -30,6 +32,21 @@ const BrandPage = () => {
       setLoading(false);
     }
   };
+  const handleBrandSubmit = async (form: FormData) => {
+    try {
+      if (editingBrand) {
+        await updateBrand(editingBrand._id, form);
+        setMessage("Brand updated successfully");
+      } else {
+        await createBrand(form);
+        setMessage("Brand added successfully");
+      }
+      await fetchBrand();
+      setEditingBrand(null);
+    } catch {
+      setError("Failed to submit brand");
+    }
+  };
   const openConfirmDialog = (id: string) => {
     setPendingDeleteId(id);
     setConfirmOpen(true);
@@ -37,7 +54,7 @@ const BrandPage = () => {
   const confirmDelete = async () => {
     if (!pendingDeleteId) return;
     try {
-      await API.delete(`/brands/${pendingDeleteId}`);
+      await deleteBrand(pendingDeleteId);
       setBrands((prev) => prev.filter((p) => p._id !== pendingDeleteId));
       setMessage("Brand has been deleted");
     } catch (err: any) {
@@ -74,6 +91,7 @@ const BrandPage = () => {
               fetchBrand();
               setEditingBrand(null);
             }}
+            onSubmit={handleBrandSubmit}
           />
         </div>
         {brands && brands.length > 0 ? (
