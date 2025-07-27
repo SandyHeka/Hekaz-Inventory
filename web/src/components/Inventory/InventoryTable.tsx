@@ -6,6 +6,7 @@ type Props = {
   onStockIn: (product: Product) => void;
   onStockOut: (product: Product) => void;
   onAdjust: (product: Product) => void;
+  onViewLogs: (product: Product) => void;
 };
 
 const InventoryTable = ({
@@ -13,6 +14,7 @@ const InventoryTable = ({
   onStockIn,
   onStockOut,
   onAdjust,
+  onViewLogs,
 }: Props) => {
   return (
     <table className="min-w-full text-sm text-left bg-white dark:bg-gray-800 rounded-lg shadow">
@@ -68,7 +70,7 @@ const InventoryTable = ({
                 </button>
                 <button
                   onClick={() => onStockOut(product)}
-                  className="flex items-center gap-1 bg-orange-500 hover:bg-orange-700 text-white text-xs px-3 py-2 rounded transition"
+                  className="flex items-center gap-1 bg-primary hover:bg-orange-700 text-white text-xs px-3 py-2 rounded transition"
                 >
                   <FaMinus />
                   Out
@@ -79,6 +81,12 @@ const InventoryTable = ({
                 >
                   <FaSync />
                   Adjust
+                </button>
+                <button
+                  onClick={() => onViewLogs(product)}
+                  className="flex items-center gap-1 bg-indigo-600 hover:bg-indigo-800 text-white text-xs px-3 py-2 rounded transition"
+                >
+                  View Logs
                 </button>
               </td>
             </tr>

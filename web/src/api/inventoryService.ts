@@ -22,3 +22,9 @@ export const getLowStockProducts = async (): Promise<Product[]> => {
 
   return res.data.lowStockProduct || [];
 };
+
+export const getStockLogs = async (ProductId: string) => {
+  const res = await API.get(`/inventory/logs/${ProductId}`);
+
+  return res.data;
+};

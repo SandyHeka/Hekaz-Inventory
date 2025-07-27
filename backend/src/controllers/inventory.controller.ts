@@ -115,3 +115,16 @@ export const getLowStock = async (req: Request, res: Response) => {
     res.status(500).json({ error: "Failed to Fetch Low Stock Products" });
   }
 };
+
+export const getStockLogs = async (req: Request, res: Response) => {
+  try {
+    const { productId } = req.params;
+    const logs = await StockLog.find({ productId })
+      .populate("userId", "name")
+      .sort({ createdAt: -1 });
+
+    res.json(logs);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to fetch stock logs" });
+  }
+};

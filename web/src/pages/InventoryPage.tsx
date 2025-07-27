@@ -11,6 +11,7 @@ import StockInModal from "../components/Inventory/StockInModal";
 import StockOutModal from "../components/Inventory/StockOutModal";
 import AdjustStockModal from "../components/Inventory/AdjustStockModal";
 import LowStockAlertCard from "../components/Inventory/LowStockAlertCard";
+import StockLogModal from "../components/Inventory/StockLogModal";
 
 const InventoryPage = () => {
   const [products, setProducts] = useState<Product[]>([]);
@@ -23,6 +24,7 @@ const InventoryPage = () => {
   const [stockInOpen, setStockInOpen] = useState(false);
   const [stockOutOpen, setStockOutOpen] = useState(false);
   const [adjustOpen, setAdjustOpen] = useState(false);
+  const [logProductId, setLogProductId] = useState<string | null>(null);
 
   const fetchProducts = async (page: number = 1) => {
     try {
@@ -78,6 +80,7 @@ const InventoryPage = () => {
                 onStockIn={handleStockIn}
                 onStockOut={handleStockOut}
                 onAdjust={handleAdjust}
+                onViewLogs={(product) => setLogProductId(product._id)}
               />
               <LowStockAlertCard />
               <Pagination
@@ -134,6 +137,13 @@ const InventoryPage = () => {
                     setSelectedProduct(null);
                   }}
                   onError={(msg) => setError(msg)}
+                />
+              )}
+
+              {logProductId && (
+                <StockLogModal
+                  productId={logProductId}
+                  onClose={() => setLogProductId(null)}
                 />
               )}
             </>

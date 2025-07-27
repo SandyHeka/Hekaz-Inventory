@@ -47,10 +47,12 @@ const StockInModal = ({
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white dark:bg-gray-800 p-6 rounded shadow w-96">
-        <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-50 mb-4">
-          Stock In - {product.name}
-        </h2>
+      <div className="bg-white dark:bg-gray-800 p-6 py-3 rounded shadow w-full max-w-lg">
+        <div className="bg-primary dark:bg-gray-800 text-white px-6 py-3 mb-4 rounded-t">
+          <h2 className="text-lg font-semibold text-gray-50 dark:text-gray-800 mb-4">
+            Stock In - {product.name}
+          </h2>
+        </div>
         {message && <ToastMessage message={message} type="success" />}
         {error && <ToastMessage message={error} type="error" />}
         <div className="mb-4">
@@ -78,14 +80,14 @@ const StockInModal = ({
         </div>
         <div className="flex justify-end gap-2">
           <button
-            className="bg-gray-300 dark:bg-gray-600 text-gray-800 dark:text-white px-4 py-2 rounded"
+            className="bg-green-700 dark:bg-gray-600 text-white  px-4 py-2 rounded"
             onClick={onClose}
             disabled={loading}
           >
             Cancel
           </button>
           <button
-            className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded"
+            className="bg-primary hover:bg-orange-700 text-white px-4 py-2 rounded"
             onClick={handleSubmit}
             disabled={loading}
           >
