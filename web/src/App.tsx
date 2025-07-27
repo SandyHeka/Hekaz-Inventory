@@ -13,6 +13,7 @@ import InventoryPage from "./pages/InventoryPage";
 import PrivateRoute from "./routes/PrivateRoute";
 import TwoFactorSetupPage from "./pages/TwoFactorSetupPage";
 import Verify2FAPage from "./pages/Verify2FAPage";
+import DealerProductPage from "./pages/DealerProductPage";
 
 function App() {
   return (
@@ -73,6 +74,14 @@ function App() {
           element={
             <PrivateRoute>
               <InventoryPage />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/dealers/:dealerId/products"
+          element={
+            <PrivateRoute>
+              <DealerProductPage />
             </PrivateRoute>
           }
         />

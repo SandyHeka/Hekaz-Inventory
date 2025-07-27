@@ -1,6 +1,7 @@
 import React from "react";
 import type { Dealer } from "../../types/DealerTypes";
-import { FaEdit, FaTrash } from "react-icons/fa";
+import { FaEdit, FaEye, FaTrash } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
 type Props = {
   dealers: Dealer[];
@@ -8,6 +9,7 @@ type Props = {
   onEdit: (dealer: Dealer) => void;
 };
 const DealerList = ({ dealers, onDelete, onEdit }: Props) => {
+  const navigate = useNavigate();
   return (
     <table className="min-w-full text-sm text-left bg-white dark:bg-gray-800 rounded-lg shadow">
       <thead className="bg-gray-100 dark:bg-gray-800">
@@ -68,6 +70,12 @@ const DealerList = ({ dealers, onDelete, onEdit }: Props) => {
                 onClick={() => onDelete(dealer._id)}
               >
                 <FaTrash />
+              </button>
+              <button
+                className="flex items-center gap-1 bg-green-700 hover:bg-green-900 text-white text-xs px-3 py-1 rounded transition"
+                onClick={() => navigate(`/dealers/${dealer._id}/products`)}
+              >
+                <FaEye />
               </button>
             </td>
           </tr>

@@ -5,6 +5,7 @@ import {
   getProductById,
   updateProduct,
   deleteProduct,
+  getProductsByDealer,
 } from "../controllers/product.controller";
 import { upload } from "../middleware/upload";
 import { requireAuth } from "../middleware/requireAuth";
@@ -15,5 +16,6 @@ router.get("/", requireAuth, getAllProducts);
 router.get("/:id", requireAuth, getProductById);
 router.put("/:id", upload.single("image"), requireAuth, updateProduct);
 router.delete("/:id", requireAuth, deleteProduct);
+router.get("/dealer/:dealerId", getProductsByDealer);
 
 export default router;

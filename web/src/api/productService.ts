@@ -32,3 +32,8 @@ export const updateProduct = async (
 export const deleteProduct = async (productId: string): Promise<void> => {
   await API.delete(`/products/${productId}`);
 };
+
+export const getProductsByDealer = async (dealerId: string) => {
+  const res = await API.get(`/products/dealer/${dealerId}`);
+  return res.data;
+};

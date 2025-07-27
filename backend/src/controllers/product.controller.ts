@@ -127,3 +127,30 @@ export const deleteProduct = async (req: Request, res: Response) => {
     res.status(500).json({ error: "Failed to delete product" });
   }
 };
+
+export const getProductsByDealer = async (req: Request, res: Response) => {
+  try {
+    const page = parseInt(req.query.page as string) || 1;
+    const limit = parseInt(req.query.limit as string) || 10;
+    const skip = (page - 1) * limit;
+    const { dealerId } = req.params;
+    const [products, total] = await Promise.all([
+      Product.find({ dealer: dealerId })
+        .skip(skip)
+        .limit(limit)
+        .populate("category", "name")
+        .populate("brand", "name")
+        .populate("dealer", "name"),
+      Product.countDocuments({ dealer: dealerId }),
+    ]);
+    res.status(200).json({
+      products,
+      totalPage: Math.ceil(total / limit),
+      page,
+      dealer: products[0]?.dealer || null,
+    });
+  } catch (err) {
+    console.log("Error fetching products by dealer", err);
+    res.status(500).json({ message: "Server Error" });
+  }
+};

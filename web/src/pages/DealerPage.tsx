@@ -19,6 +19,7 @@ import Pagination from "../components/Pagination";
 const DealerPage = () => {
   const [dealers, setDealers] = useState<Dealer[]>([]);
   const [editingDealer, setEditingDealer] = useState<Dealer | null>(null);
+
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
   const [message, setMessage] = useState("");
