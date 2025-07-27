@@ -28,8 +28,8 @@ const StockLogModal = ({ productId, onClose }: StockLogModalProps) => {
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 px-2">
       <div className="bg-white dark:bg-gray-800 p-6 py-3 rounded shadow w-full max-w-3xl">
-        <div className="bg-primary dark:bg-gray-800 text-white px-6 py-3 rounded-t">
-          <h2 className="text-lg font-semibold text-gray-50 dark:text-gray-800 mb-4">
+        <div className="bg-primary dark:bg-gray-700 text-white px-6 py-3 rounded-t">
+          <h2 className="text-lg font-semibold text-gray-50  mb-4">
             Stock Movement Logs
           </h2>
         </div>
@@ -53,7 +53,7 @@ const StockLogModal = ({ productId, onClose }: StockLogModalProps) => {
                 {logs.map((log) => (
                   <tr
                     key={log._id}
-                    className="border-t border-gray-300 dark:border-gray-600"
+                    className="border-t border-gray-300 text-gray-800 dark:text-gray-200"
                   >
                     <td className="px-4 py-2">{log.type}</td>
                     <td className="px-4 py-2">
@@ -63,7 +63,7 @@ const StockLogModal = ({ productId, onClose }: StockLogModalProps) => {
                       {new Date(log.createdAt).toLocaleString()}
                     </td>
                     <td className="px-4 py-2">{log.quantity}</td>
-                    <td className="px-4 py-2 text-xs text-gray-600 dark:text-gray-400">
+                    <td className="px-4 py-2 text-xs text-gray-800 dark:text-gray-200">
                       {log.note || "-"}
                     </td>
                   </tr>

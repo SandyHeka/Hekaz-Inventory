@@ -50,15 +50,15 @@ const AdjustStockModal = ({
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white dark:bg-gray-800 p-6 py-3 rounded shadow w-full max-w-lg">
-        <div className="bg-primary dark:bg-gray-800 text-white px-6 py-3 mb-4 rounded-t">
-          <h2 className="text-lg font-semibold text-gray-50 dark:text-gray-800 mb-4">
+        <div className="bg-primary dark:bg-gray-700 text-white px-6 py-3 mb-4 rounded-t">
+          <h2 className="text-lg font-semibold text-gray-50  mb-4">
             Adjust Stock - {product.name}
           </h2>
         </div>
         {message && <ToastMessage message={message} type="success" />}
         {error && <ToastMessage message={error} type="error" />}
         <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-gray-700 dark:text-white mb-1">
             New Quantity
           </label>
           <input

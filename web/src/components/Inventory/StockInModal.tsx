@@ -48,8 +48,8 @@ const StockInModal = ({
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white dark:bg-gray-800 p-6 py-3 rounded shadow w-full max-w-lg">
-        <div className="bg-primary dark:bg-gray-800 text-white px-6 py-3 mb-4 rounded-t">
-          <h2 className="text-lg font-semibold text-gray-50 dark:text-gray-800 mb-4">
+        <div className="bg-primary dark:bg-gray-700 text-white px-6 py-3 mb-4 rounded-t">
+          <h2 className="text-lg font-semibold text-gray-50  mb-4">
             Stock In - {product.name}
           </h2>
         </div>
