@@ -44,26 +44,24 @@ const DealerProductPage = () => {
       {error && <ToastMessage message={error} type="error" />}
 
       <div className="flex flex-col md:flex-row gap-4">
-        <div className="md:w-full bg-white dark:bg-gray-800 p-4 rounded shadow overflow-x-auto">
-          {loading ? (
-            <p className="text-gray-600 dark:text-gray-300 text-center">
-              Loading dealers...
-            </p>
-          ) : products.length > 0 ? (
-            <div className="md:w-full bg-white dark:bg-gray-800 p-4 rounded shadow overflow-x-auto">
-              <ProductDealerList products={products} />
-              <Pagination
-                currentPage={currentPage}
-                totalPages={totalPages}
-                onPageChange={setCurrentPage}
-              />
-            </div>
-          ) : (
-            <p className="text-gray-500 dark:text-gray-300 text-lg font-medium">
-              No dealers found.
-            </p>
-          )}
-        </div>
+        {loading ? (
+          <p className="text-gray-600 dark:text-gray-300 text-center">
+            Loading dealers...
+          </p>
+        ) : products.length > 0 ? (
+          <div className="md:w-full bg-white dark:bg-gray-800 p-4 rounded shadow overflow-x-auto">
+            <ProductDealerList products={products} />
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={setCurrentPage}
+            />
+          </div>
+        ) : (
+          <p className="text-gray-500 dark:text-gray-300 text-lg font-medium">
+            No dealers found.
+          </p>
+        )}
       </div>
     </DashboardPage>
   );
