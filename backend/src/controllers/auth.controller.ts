@@ -7,7 +7,11 @@ import QRCode from "qrcode";
 export const register = async (req: Request, res: Response): Promise<void> => {
   try {
     const { name, email, password, role, phone } = req.body;
-    console.log(name);
+
+    if (!name || !email || !password || !role) {
+      res.status(400).json({ error: "Missing fields" });
+      return;
+    }
 
     const existing = await User.findOne({ email });
     if (existing) {
