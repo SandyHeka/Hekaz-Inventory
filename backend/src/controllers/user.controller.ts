@@ -65,7 +65,7 @@ export const updateUserRole = async (req: Request, res: Response) => {
     if (!updated) return res.status(404).json({ error: "User not found" });
     res.json(updated);
   } catch (err) {
-    res.json(500).json({ error: "Failed to update role" });
+    res.status(500).json({ error: "Failed to update role" });
   }
 };
 
@@ -80,7 +80,7 @@ export const updateUser = async (req: Request, res: Response) => {
       { new: true, runValidators: true }
     ).select("-password");
     if (!updateUser) {
-      return res.json(404).json({ error: "User not found" });
+      return res.status(404).json({ error: "User not found" });
     }
     res.json(updateUser);
   } catch (err) {

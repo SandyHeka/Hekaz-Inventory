@@ -7,6 +7,7 @@ import brandRoutes from "./routes/brand.routes";
 import dealerRoutes from "./routes/dealer.routes";
 import inventoryRoutes from "./routes/inventory.routes";
 import userRoutes from "./routes/user.routes";
+import customerRoutes from "./routes/customer.routes";
 const app = express();
 
 app.use(cors());
@@ -17,6 +18,7 @@ app.use("/api/products", productRoutes);
 app.use("/api/category", categoryRoutes);
 app.use("/api/brands", brandRoutes);
 app.use("/api/dealers", dealerRoutes);
+app.use("/api/customers", customerRoutes);
 app.use("/api/inventory", inventoryRoutes);
 app.use("/uploads", express.static("uploads"));
 app.get("/api/health", (_req, res) => {
