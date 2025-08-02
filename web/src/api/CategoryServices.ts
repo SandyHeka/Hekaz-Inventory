@@ -6,7 +6,7 @@ export const createCategory = async (form: CategoryFormData): Promise<any> => {
   return res.data;
 };
 export const getAllCategory = async (limit = 20): Promise<any> => {
-  const res = await API.get(`/category?limit=${limit}}`);
+  const res = await API.get(`/category?limit=${limit}`);
   return res.data;
 };
 export const updateCategory = async (

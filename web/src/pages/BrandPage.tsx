@@ -8,7 +8,7 @@ import Pagination from "../components/Pagination";
 import ConfirmDialog from "../components/ConfirmDialog";
 import ToastMessage from "../components/ToastMessage";
 
-import { createBrand, deleteBrand, updateBrand } from "../api/BrandService";
+import { createBrand, deleteBrand, updateBrand } from "../api/brandService";
 const BrandPage = () => {
   const [brands, setBrands] = useState<Brand[]>([]);
   const [editingBrand, setEditingBrand] = useState<Brand | null>(null);
@@ -71,6 +71,7 @@ const BrandPage = () => {
     if (message) {
       const timer = setTimeout(() => {
         setMessage("");
+        setError("");
       }, 3000); // 3 seconds
 
       return () => clearTimeout(timer); // cleanup if component unmounts

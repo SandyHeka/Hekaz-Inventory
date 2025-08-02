@@ -1,31 +1,36 @@
 import { useEffect, useState } from "react";
 import { StatusType } from "../../types/StatusTypes";
-import type { Category, CategoryFormData } from "../../types/CategoryTypes";
-
 import ToastMessage from "../ToastMessage";
+import type { Customer, CustomerFormData } from "../../types/CustomerTypes";
 
 type Props = {
-  existingCategory?: Category | null;
-  onSubmit: (form: CategoryFormData) => Promise<void>;
+  existingCustomer?: Customer | null;
+  onSubmit: (form: CustomerFormData) => Promise<void>;
   onSuccess: () => void;
 };
 
-const AddCategoryForm = ({
-  existingCategory = null,
+const AddCustomerForm = ({
+  existingCustomer = null,
   onSuccess,
   onSubmit,
 }: Props) => {
   const [form, setForm] = useState({
-    name: existingCategory?.name || "",
-    status: existingCategory?.status || StatusType.ACTIVE,
+    name: existingCustomer?.name || "",
+    phone: existingCustomer?.phone || "",
+    address: existingCustomer?.address || "",
+    email: existingCustomer?.email || "",
+    status: existingCustomer?.status || StatusType.ACTIVE,
   });
 
   useEffect(() => {
     setForm({
-      name: existingCategory?.name || "",
-      status: existingCategory?.status || StatusType.ACTIVE,
+      name: existingCustomer?.name || "",
+      phone: existingCustomer?.phone || "",
+      address: existingCustomer?.address || "",
+      email: existingCustomer?.email || "",
+      status: existingCustomer?.status || StatusType.ACTIVE,
     });
-  }, [existingCategory]);
+  }, [existingCustomer]);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
@@ -53,11 +58,14 @@ const AddCategoryForm = ({
       await onSubmit(form);
       setForm({
         name: "",
+        phone: "",
+        email: "",
+        address: "",
         status: StatusType.ACTIVE,
       });
       onSuccess();
     } catch (err: any) {
-      setError("Failed to add category");
+      setError("Failed to add customer");
     } finally {
       setLoading(false);
     }
@@ -70,7 +78,34 @@ const AddCategoryForm = ({
         name="name"
         value={form.name}
         onChange={handleChange}
-        placeholder="Category Name"
+        placeholder="Customer Name"
+        className="w-full p-2 border rounded dark:bg-gray-700 dark:text-white"
+        required
+      />
+      <input
+        type="email"
+        name="email"
+        value={form.email}
+        onChange={handleChange}
+        placeholder="Customer Email"
+        className="w-full p-2 border rounded dark:bg-gray-700 dark:text-white"
+        required
+      />
+      <input
+        type="number"
+        name="phone"
+        value={form.phone}
+        onChange={handleChange}
+        placeholder="Customer Phone Number"
+        className="w-full p-2 border rounded dark:bg-gray-700 dark:text-white"
+        required
+      />
+      <input
+        type="text"
+        name="address"
+        value={form.address}
+        onChange={handleChange}
+        placeholder="Customer Address"
         className="w-full p-2 border rounded dark:bg-gray-700 dark:text-white"
         required
       />
@@ -99,12 +134,12 @@ const AddCategoryForm = ({
       >
         {loading
           ? "Saving..."
-          : existingCategory
-          ? "Update Category"
-          : "Add Category"}
+          : existingCustomer
+          ? "Update Customer"
+          : "Add Customer"}
       </button>
     </form>
   );
 };
 
-export default AddCategoryForm;
+export default AddCustomerForm;

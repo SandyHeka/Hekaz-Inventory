@@ -32,6 +32,7 @@ const DealerPage = () => {
     if (message) {
       const timer = setTimeout(() => {
         setMessage("");
+        setError("");
       }, 3000); // Hide after 3 seconds
 
       return () => clearTimeout(timer);

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import type { Product } from "../../types/ProductTypes";
-import { getAllCategory } from "../../api/CategoryServices";
-import { getAllBrand } from "../../api/BrandService";
+import { getAllCategory } from "../../api/categoryServices";
+import { getAllBrand } from "../../api/brandService";
 import { getAllDealers } from "../../api/dealersService";
 const generateBarcode = () => {
   return Math.random().toString(36).substring(2, 10).toUpperCase();

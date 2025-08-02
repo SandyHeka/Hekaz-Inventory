@@ -5,7 +5,7 @@ import {
   deleteUser,
   getAllUsers,
   updateUser,
-} from "../api/UserServices";
+} from "../api/userServices";
 import DashboardPage from "./DasboardPage";
 import ToastMessage from "../components/ToastMessage";
 import Pagination from "../components/Pagination";
@@ -80,6 +80,7 @@ const UserPage = () => {
     if (message) {
       const timer = setTimeout(() => {
         setMessage("");
+        setError("");
       }, 3000); // Hide after 3 seconds
 
       return () => clearTimeout(timer);

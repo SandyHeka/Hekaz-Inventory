@@ -12,7 +12,7 @@ import {
   deleteCategory,
   getAllCategory,
   updateCategory,
-} from "../api/CategoryServices";
+} from "../api/categoryServices";
 
 const CategoryPage = () => {
   const [category, setCategory] = useState<Category[]>([]);
@@ -79,6 +79,7 @@ const CategoryPage = () => {
     if (message) {
       const timer = setTimeout(() => {
         setMessage("");
+        setError("");
       }, 3000); // 3 seconds
 
       return () => clearTimeout(timer); // cleanup if component unmounts

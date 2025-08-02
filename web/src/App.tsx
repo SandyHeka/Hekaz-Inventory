@@ -17,6 +17,7 @@ import DealerProductPage from "./pages/DealerProductPage";
 import UserPage from "./pages/UserPage";
 import { ProtectedRoute } from "./routes/ProtectedRoute";
 import { Toaster } from "react-hot-toast";
+import CustomerPage from "./pages/CustomerPage";
 function App() {
   return (
     <>
@@ -86,6 +87,14 @@ function App() {
             element={
               <PrivateRoute>
                 <DealerProductPage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/customers"
+            element={
+              <PrivateRoute>
+                <CustomerPage />
               </PrivateRoute>
             }
           />
