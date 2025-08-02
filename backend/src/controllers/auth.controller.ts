@@ -8,7 +8,7 @@ export const register = async (req: Request, res: Response): Promise<void> => {
   try {
     const { name, email, password, role, phone } = req.body;
 
-    if (!name || !email || !password || !role) {
+    if (!name || !email || !password) {
       res.status(400).json({ error: "Missing fields" });
       return;
     }
@@ -68,7 +68,7 @@ export const getMe = async (req: Request, res: Response) => {
 
   try {
     const decoded: any = jwt.verify(token, process.env.JWT_SECRET!);
-    const user = await User.findById(decoded.id).select("-password");
+    const user = await User.findById(decoded.id).select("+password");
     res.json(user);
   } catch (err) {
     res.status(401).json({ error: "invalid token" });
@@ -82,7 +82,11 @@ export const changePassword = async (req: Request, res: Response) => {
 
     const decoded: any = jwt.verify(token, process.env.JWT_SECRET!);
     const user = await User.findById(decoded.id);
-    if (!user) return res.json(404).json({ error: "User not found" });
+    if (!user || !user.password) {
+      return res
+        .status(404)
+        .json({ error: "User not found or password not set" });
+    }
 
     const { currentPassword, newPassword } = req.body;
     const isMatch = await comparePassword(currentPassword, user.password);

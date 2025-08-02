@@ -14,87 +14,100 @@ import PrivateRoute from "./routes/PrivateRoute";
 import TwoFactorSetupPage from "./pages/TwoFactorSetupPage";
 import Verify2FAPage from "./pages/Verify2FAPage";
 import DealerProductPage from "./pages/DealerProductPage";
-
+import UserPage from "./pages/UserPage";
+import { ProtectedRoute } from "./routes/ProtectedRoute";
+import { Toaster } from "react-hot-toast";
 function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route
-          path="/login"
-          element={
-            <PublicRoute>
-              <LoginPage />
-            </PublicRoute>
-          }
-        />
-        <Route
-          path="/register"
-          element={
-            <PublicRoute>
-              <RegisterPage />
-            </PublicRoute>
-          }
-        />
-        <Route path="/2fa/setup" element={<TwoFactorSetupPage />} />
-        <Route path="/2fa/verify" element={<Verify2FAPage />} />
-        <Route
-          path="/products"
-          element={
-            <PrivateRoute>
-              <ProductListPage />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/category"
-          element={
-            <PrivateRoute>
-              <CategoryPage />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/brand"
-          element={
-            <PrivateRoute>
-              <BrandPage />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/dealer"
-          element={
-            <PrivateRoute>
-              <DealerPage />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/inventory"
-          element={
-            <PrivateRoute>
-              <InventoryPage />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/dealers/:dealerId/products"
-          element={
-            <PrivateRoute>
-              <DealerProductPage />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/"
-          element={
-            <PrivateRoute>
-              <DashboardPage>{""}</DashboardPage>
-            </PrivateRoute>
-          }
-        />
-      </Routes>
-    </BrowserRouter>
+    <>
+      <Toaster position="top-right" />
+      <BrowserRouter>
+        <Routes>
+          <Route
+            path="/login"
+            element={
+              <PublicRoute>
+                <LoginPage />
+              </PublicRoute>
+            }
+          />
+          <Route
+            path="/register"
+            element={
+              <PublicRoute>
+                <RegisterPage />
+              </PublicRoute>
+            }
+          />
+          <Route path="/2fa/setup" element={<TwoFactorSetupPage />} />
+          <Route path="/2fa/verify" element={<Verify2FAPage />} />
+          <Route
+            path="/products"
+            element={
+              <PrivateRoute>
+                <ProductListPage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/category"
+            element={
+              <PrivateRoute>
+                <CategoryPage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/brand"
+            element={
+              <PrivateRoute>
+                <BrandPage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/dealer"
+            element={
+              <PrivateRoute>
+                <DealerPage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/inventory"
+            element={
+              <PrivateRoute>
+                <InventoryPage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/dealers/:dealerId/products"
+            element={
+              <PrivateRoute>
+                <DealerProductPage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/users"
+            element={
+              <ProtectedRoute>
+                <UserPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/"
+            element={
+              <PrivateRoute>
+                <DashboardPage>{""}</DashboardPage>
+              </PrivateRoute>
+            }
+          />
+        </Routes>
+      </BrowserRouter>
+    </>
   );
 }
 

@@ -8,6 +8,7 @@ export const createBrand = async (form: FormData): Promise<any> => {
 };
 export const getAllBrand = async (limit = 20): Promise<any> => {
   const res = await API.get(`/brands?limit=${limit}`);
+
   return res.data;
 };
 export const updateBrand = async (

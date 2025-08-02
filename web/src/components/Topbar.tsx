@@ -14,7 +14,7 @@ import { useAuth } from "../context/AuthContext";
 import Modal from "./Modal";
 import API from "../api/axios";
 import { useNavigate } from "react-router-dom";
-
+import toast from "react-hot-toast";
 const Topbar = ({ onMobileToggle }: { onMobileToggle: () => void }) => {
   const [darkMode, setDarkMode] = useState(false);
   const { user, token, logout } = useAuth();
@@ -22,7 +22,7 @@ const Topbar = ({ onMobileToggle }: { onMobileToggle: () => void }) => {
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [error, setError] = useState("");
-  const [message, setMessage] = useState("");
+
   const navigate = useNavigate();
   useEffect(() => {
     document.documentElement.classList.toggle("dark", darkMode);
@@ -32,20 +32,20 @@ const Topbar = ({ onMobileToggle }: { onMobileToggle: () => void }) => {
     e.preventDefault();
     setError("");
     try {
-      const res = API.put(
+      const res = await API.put(
         "/auth/change-password",
         {
-          oldPassword,
+          currentPassword: oldPassword,
           newPassword,
         },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      setMessage("Password updated successfully");
+      toast.success("Password changed successfully");
+
       setOldPassword("");
       setNewPassword("");
       setIsModalOpen(false);
     } catch (err: any) {
-      setMessage("");
       setError(err.response?.data?.error || "Password Change failed");
     }
   };
@@ -141,13 +141,14 @@ const Topbar = ({ onMobileToggle }: { onMobileToggle: () => void }) => {
               Change Password
             </h2>
             {error && <p className="text-red-500 text-sm mb-2">{error}</p>}
-            {message && <p className="text-green-600">{message}</p>}
+
             <form className="space-y-4" onSubmit={handleChangePassword}>
               <input
                 type="password"
                 placeholder="Old Password"
                 className="w-full border border-gray-300 dark:bg-gray-900 border-b dark:border-gray-700 p-2 rounded"
                 value={oldPassword}
+                name="currentPassword"
                 onChange={(e) => setOldPassword(e.target.value)}
                 required
               />
@@ -156,6 +157,7 @@ const Topbar = ({ onMobileToggle }: { onMobileToggle: () => void }) => {
                 placeholder="New Password"
                 className="w-full border border-gray-300 dark:bg-gray-900 border-b dark:border-gray-700 p-2 rounded"
                 value={newPassword}
+                name="newPassword"
                 onChange={(e) => setNewPassword(e.target.value)}
                 required
               />

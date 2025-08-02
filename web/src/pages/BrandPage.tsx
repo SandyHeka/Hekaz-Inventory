@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import DashboardLayout from "./DasboardPage";
+import DashboardPage from "./DasboardPage";
 import AddBrandForm from "../components/Brand/AddBrandForm";
 import BrandList from "../components/Brand/BrandList";
 import type { Brand } from "../types/BrandTypes";
@@ -77,7 +77,7 @@ const BrandPage = () => {
     }
   }, [message]);
   return (
-    <DashboardLayout>
+    <DashboardPage>
       <h2 className="text-2xl font-bold mb-6 text-gray-800 dark:text-gray-50">
         Brand Management
       </h2>
@@ -124,7 +124,7 @@ const BrandPage = () => {
         onConfirm={confirmDelete}
         message="Are you sure you want to delete this product?"
       />
-    </DashboardLayout>
+    </DashboardPage>
   );
 };
 

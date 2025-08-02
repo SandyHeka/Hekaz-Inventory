@@ -1,5 +1,5 @@
 // Sidebar.tsx
-import { LibraryBig } from "lucide-react";
+import { LibraryBig, User2 } from "lucide-react";
 import {
   Menu,
   X,
@@ -12,6 +12,7 @@ import {
 import { GiBrandyBottle } from "react-icons/gi";
 
 import { Link } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 const Sidebar = ({
   collapsed,
@@ -24,6 +25,7 @@ const Sidebar = ({
   setCollapsed: (val: boolean) => void;
   setMobileOpen: (val: boolean) => void;
 }) => {
+  const { user } = useAuth();
   return (
     <aside
       className={`
@@ -83,6 +85,12 @@ const Sidebar = ({
           <GiBrandyBottle size={20} />
           {!collapsed && <span className="text-lg">Inventory</span>}
         </Link>
+        {user?.role === "admin" && (
+          <Link to="/users" className="flex items-center gap-3">
+            <User2 size={20} />
+            {!collapsed && <span className="text-lg">Users</span>}
+          </Link>
+        )}
       </nav>
     </aside>
   );

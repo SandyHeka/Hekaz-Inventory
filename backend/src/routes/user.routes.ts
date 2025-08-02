@@ -7,13 +7,14 @@ import {
   updateUser,
   updateUserRole,
 } from "../controllers/user.controller";
+import { requireAdmin } from "../middleware/requireAdmin";
 const router = express.Router();
 router.use(requireAuth);
 
-router.post("/", createUser);
-router.get("/", getAllUsers);
-router.put("/:id", updateUser);
-router.patch("/role/:userId", updateUserRole);
-router.delete("/:userId", deleteUser);
+router.post("/", requireAdmin, createUser);
+router.get("/", requireAdmin, getAllUsers);
+router.put("/:id", requireAdmin, updateUser);
+router.patch("/role/:userId", requireAdmin, updateUserRole);
+router.delete("/:userId", requireAdmin, deleteUser);
 
 export default router;

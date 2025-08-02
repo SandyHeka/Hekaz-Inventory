@@ -8,10 +8,12 @@ export const hashPassword = async (plain: string) => {
   return bcrypt.hash(plain, salt);
 };
 
-export const comparePassword = (plain: string, hash: string) => {
-  return bcrypt.compare(plain, hash);
+export const comparePassword = (
+  password: string,
+  hashed: string
+): Promise<boolean> => {
+  return bcrypt.compare(password, hashed); // error: if hashed is undefined
 };
-
 export const generateToken = (user: IUser) => {
   return jwt.sign(
     {

@@ -1,7 +1,8 @@
 import { Request, Response } from "express";
 import { User } from "../models/User";
 import { hashPassword } from "../utils/auth";
-
+import crypto from "crypto";
+import { sendEmail } from "../utils/mailer";
 export const createUser = async (req: Request, res: Response) => {
   try {
     const { name, email, password, role, phone } = req.body;
@@ -20,9 +21,10 @@ export const createUser = async (req: Request, res: Response) => {
     }
 
     if (await User.findOne({ email })) {
-      return res.json(400).json({ error: "Email already exists" });
+      return res.status(400).json({ error: "Email already exists" });
     }
-    const hashed = await hashPassword(password);
+    const tempPassword = crypto.randomBytes(4).toString("hex");
+    const hashed = await hashPassword(tempPassword);
 
     const user = await User.create({
       name,
@@ -31,20 +33,36 @@ export const createUser = async (req: Request, res: Response) => {
       role,
       phone,
     });
-
-    res.status(201).json({ message: "User Created", userId: user._id });
+    const subject = "Your Account Access for HekaZ Inventory";
+    const html = `
+      <p> Hello ${name}, </p>
+      <p>You have been granted access as a <strong>${role}</strong>.</p>
+      <p><strong>Login Email:</strong> ${email}</p>
+      <p><strong>Temporary Password:</strong> ${tempPassword}</p>
+      <p>Please log in and change your password after login.</p>
+    `;
+    await sendEmail(email, subject, html);
+    res
+      .status(201)
+      .json({ message: "User Created & Email Sent", userId: user._id });
   } catch (err) {
+    console.error("❌ Failed to create user:", err);
     res.status(500).json({ error: "Failed to create user" });
   }
 };
 
 export const getAllUsers = async (req: Request, res: Response) => {
+  const page = parseInt(req.query.page as string) || 1;
+  const limit = parseInt(req.query.limit as string) || 10;
+  const skip = (page - 1) * limit;
   try {
-    const users = await User.find({
-      role: { $in: ["admin", "manager", "staff"] },
-    }).select("-password");
-
-    res.json(users);
+    const query = { role: { $in: ["admin", "manager", "staff"] } };
+    const [users, total] = await Promise.all([
+      User.find(query).select("-password").skip(skip).limit(limit),
+      User.countDocuments(query),
+    ]);
+    const totalPage = Math.ceil(total / limit);
+    res.json({ users, totalPage, page, totalUsers: total });
   } catch (err) {
     res.status(500).json({ error: "Failed to fetch users" });
   }
@@ -79,10 +97,10 @@ export const updateUser = async (req: Request, res: Response) => {
       { name, email, phone, role },
       { new: true, runValidators: true }
     ).select("-password");
-    if (!updateUser) {
+    if (!updatedUser) {
       return res.status(404).json({ error: "User not found" });
     }
-    res.json(updateUser);
+    res.json(updatedUser);
   } catch (err) {
     res.status(500).json({ error: "Failed to update user" });
   }
