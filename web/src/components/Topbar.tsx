@@ -49,6 +49,9 @@ const Topbar = ({ onMobileToggle }: { onMobileToggle: () => void }) => {
       setError(err.response?.data?.error || "Password Change failed");
     }
   };
+  const ModalClose = () => {
+    setIsModalOpen(false);
+  };
 
   return (
     <header className="flex justify-between items-center p-4 bg-white dark:bg-gray-900 border-b dark:border-gray-700 md:ml-0">
@@ -135,11 +138,13 @@ const Topbar = ({ onMobileToggle }: { onMobileToggle: () => void }) => {
         </Menu>
       </div>
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
-        <div className="flex items-center justify-center p-8 bg-white shadow dark:bg-gray-900 border-b dark:border-gray-700">
-          <div className="w-full max-w-md space-y-6">
-            <h2 className="text-3xl font-bold text-gray-900">
-              Change Password
-            </h2>
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white dark:bg-gray-800 p-6 py-3 rounded shadow w-full max-w-lg">
+            <div className="bg-primary dark:bg-gray-700 text-white px-6 py-3 mb-4 rounded-t">
+              <h2 className="text-lg font-semibold text-gray-50  mb-4">
+                Change Password
+              </h2>
+            </div>
             {error && <p className="text-red-500 text-sm mb-2">{error}</p>}
 
             <form className="space-y-4" onSubmit={handleChangePassword}>
@@ -161,10 +166,17 @@ const Topbar = ({ onMobileToggle }: { onMobileToggle: () => void }) => {
                 onChange={(e) => setNewPassword(e.target.value)}
                 required
               />
-
-              <button className="w-full bg-[#c16e02] text-white py-2 rounded-md hover:bg-[#a5793f] transition">
-                Change Password
-              </button>
+              <div className="flex justify-end gap-2">
+                <button
+                  onClick={ModalClose}
+                  className="bg-green-700 dark:bg-gray-600 text-white  px-4 py-2 rounded"
+                >
+                  Cancel
+                </button>
+                <button className="bg-primary hover:bg-orange-700 text-white px-4 py-2 rounded">
+                  Change Password
+                </button>
+              </div>
             </form>
           </div>
         </div>
