@@ -56,7 +56,6 @@ const Sidebar = ({
           <LayoutDashboard size={20} />
           {!collapsed && <span className="text-lg">Dashboard</span>}
         </Link>
-
         <Link to="/products" className="flex items-center gap-3">
           <ShoppingBasket size={20} />
           {!collapsed && <span className="text-lg">Products</span>}
@@ -90,7 +89,11 @@ const Sidebar = ({
             <User2 size={20} />
             {!collapsed && <span className="text-lg">Users</span>}
           </Link>
-        )}
+        )}{" "}
+        <Link to="/purchase-orders" className="flex items-center gap-3">
+          <GiBrandyBottle size={20} />
+          {!collapsed && <span className="text-lg">Purchase Orders</span>}
+        </Link>
       </nav>
     </aside>
   );
