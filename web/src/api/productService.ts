@@ -34,6 +34,6 @@ export const deleteProduct = async (productId: string): Promise<void> => {
 };
 
 export const getProductsByDealer = async (dealerId: string) => {
-  const res = await API.get(`/products/dealer/${dealerId}`);
-  return res.data;
+  const res = await API.get(`/products/dealer/${dealerId}?page=1&limit=100`);
+  return res.data; // it contains { products, page, totalPage, dealer }
 };

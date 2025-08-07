@@ -92,7 +92,7 @@ const PurchaseOrderPage = () => {
       }, 3000);
       return () => clearTimeout(timer);
     }
-  }, [messsage, error]);
+  }, [message, error]);
 
   return (
     <DashboardPage>

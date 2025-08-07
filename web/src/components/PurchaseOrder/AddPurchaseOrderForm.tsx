@@ -4,6 +4,8 @@ import type {
   PurchaseOrderItemForm,
 } from "../../types/PurchaseOrderTypes";
 import ToastMessage from "../ToastMessage";
+import { getAllDealers } from "../../api/dealersService";
+import { getProductsByDealer } from "../../api/productService";
 
 type Props = {
   onSubmit: (form: PurchaseOrderForm) => Promise<void>;
@@ -28,18 +30,33 @@ const AddPurchaseOrderForm = ({ onSubmit, onSuccess }: Props) => {
   );
 
   useEffect(() => {
-    const fetchDropdownData = async () => {
-      const [supplierRes, productRes] = await Promise.all([
-        fetch("/api/dealers").then((res) => res.json()),
-        fetch("/api/products").then((res) => res.json()),
-      ]);
-      setSuppliers(supplierRes);
-      setProducts(productRes);
+    const fetchDealers = async () => {
+      try {
+        const dealerRes = await getAllDealers();
+        setSuppliers(dealerRes.dealers); // ✅ FIX: extract the actual array
+      } catch {
+        setSuppliers([]);
+        console.error("Failed to fetch suppliers");
+      }
     };
 
-    fetchDropdownData();
+    fetchDealers();
   }, []);
+  useEffect(() => {
+    const fetchProductsForSupplier = async () => {
+      if (!form.supplierId) return;
 
+      try {
+        const productRes = await getProductsByDealer(form.supplierId);
+        setProducts(productRes.products); // adapt based on response shape
+      } catch {
+        setProducts([]);
+        console.error("Failed to load products for selected supplier");
+      }
+    };
+
+    fetchProductsForSupplier();
+  }, [form.supplierId]);
   const handleChangeItem = (
     index: number,
     field: keyof PurchaseOrderItemForm,
@@ -94,7 +111,13 @@ const AddPurchaseOrderForm = ({ onSubmit, onSuccess }: Props) => {
       <select
         className="w-full p-2 border rounded dark:bg-gray-700 dark:text-white"
         value={form.supplierId}
-        onChange={(e) => setForm({ ...form, supplierId: e.target.value })}
+        onChange={(e) => {
+          const newSupplierId = e.target.value;
+          setForm({
+            supplierId: newSupplierId,
+            items: [{ productId: "", quantity: 1, unitPrice: 0 }],
+          });
+        }}
         required
       >
         <option value="">Select Supplier</option>
