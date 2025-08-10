@@ -60,9 +60,9 @@ const Sidebar = ({
           <ShoppingBasket size={20} />
           {!collapsed && <span className="text-lg">Products</span>}
         </Link>
-        <Link to="/orders" className="flex items-center gap-3">
+        <Link to="/sales-orders" className="flex items-center gap-3">
           <BringToFrontIcon size={20} />
-          {!collapsed && <span className="text-lg">Orders</span>}
+          {!collapsed && <span className="text-lg">Sales Orders</span>}
         </Link>
         <Link to="/customers" className="flex items-center gap-3">
           <UsersRound size={20} />

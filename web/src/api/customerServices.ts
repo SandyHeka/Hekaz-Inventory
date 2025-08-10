@@ -7,11 +7,21 @@ export const createCustomer = async (
   return res.data;
 };
 
-export const getAllCustomer = async (limit = 20): Promise<any> => {
-  const res = await API.get(`/customers?limit=${limit}`);
-  return res.data;
+export const getAllCustomers = async (page = 1) => {
+  const res = await API.get(`/customers?page=${page}&limit=100`);
+  // Normalize both 'customers' or 'customer' keys if your API varies
+  const data = res.data;
+  const customers = Array.isArray(data.customers)
+    ? data.customers
+    : Array.isArray(data.customer)
+    ? data.customer
+    : [];
+  return {
+    customers,
+    totalPages: data.totalPages ?? data.totalPage ?? 1,
+    page: data.page ?? 1,
+  };
 };
-
 export const updateCustomer = async (
   id: string,
   form: CustomerFormData

@@ -9,6 +9,7 @@ import inventoryRoutes from "./routes/inventory.routes";
 import userRoutes from "./routes/user.routes";
 import customerRoutes from "./routes/customer.routes";
 import purchaseOrderRoutes from "./routes/purchaseOrder.routes";
+import salesOrderRoutes from "./routes/salesOrder.routes";
 const app = express();
 
 app.use(cors());
@@ -22,6 +23,7 @@ app.use("/api/dealers", dealerRoutes);
 app.use("/api/customers", customerRoutes);
 app.use("/api/inventory", inventoryRoutes);
 app.use("/api/purchase-orders", purchaseOrderRoutes);
+app.use("/api/sales-orders", salesOrderRoutes);
 app.use("/uploads", express.static("uploads"));
 app.get("/api/health", (_req, res) => {
   res.status(200).json({ message: "API is healthy " });

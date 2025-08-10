@@ -4,7 +4,7 @@ import type { Customer, CustomerFormData } from "../types/CustomerTypes";
 import {
   createCustomer,
   deleteCustomer,
-  getAllCustomer,
+  getAllCustomers,
   updateCustomer,
 } from "../api/customerServices";
 import DashboardPage from "./DasboardPage";
@@ -29,9 +29,9 @@ const CustomerPage = () => {
 
   const fetchCustomer = async (page: numer = 1) => {
     try {
-      const res = await getAllCustomer();
-      if (!res.customer) return setError("No Customer Found");
-      setCustomers(res.customer);
+      const res = await getAllCustomers();
+      if (!res.customers) return setError("No Customer Found");
+      setCustomers(res.customers);
       setTotalPage(res.totalPages);
       setCurrentPage(res.page);
     } catch (err: any) {
