@@ -120,6 +120,7 @@ const BrandPage = () => {
         )}
       </div>
       <ConfirmDialog
+        name="delete"
         isOpen={confirmOpen}
         onCancel={() => setConfirmOpen(false)}
         onConfirm={confirmDelete}

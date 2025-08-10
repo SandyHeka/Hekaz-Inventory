@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import {
   createPurchaseOrder,
   getAllPurchaseOrders,
+  getPurchaseOrderById,
   updatePurchaseOrderStatus,
 } from "../api/purchaseOrderServices";
 import DashboardPage from "./DasboardPage";
@@ -15,16 +16,20 @@ import type {
   PurchaseOrder,
   PurchaseOrderForm,
 } from "../types/PurchaseOrderTypes";
+import ViewOrderModal from "../components/PurchaseOrder/ViewOrderModal";
 
 const PurchaseOrderPage = () => {
   const [orders, setOrders] = useState<PurchaseOrder[]>([]);
+  const [totalPages, setTotalPages] = useState(1);
+  const [currentPage, setCurrentPage] = useState(1);
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
   const [confirmOpen, setConfirmOpen] = useState(false);
-  const [pendingUpdateId, setPendingUpdateId] = useState<string | null>(null);
-  const [totalPages, setTotalPages] = useState(1);
-  const [currentPage, setCurrentPage] = useState(1);
-
+  const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null);
+  const [orderDetails, setOrderDetails] = useState<{
+    order: PurchaseOrder;
+    items: any[];
+  } | null>(null);
   const [pendingUpdate, setPendingUpdate] = useState<{
     id: string;
     newStatus: string;
@@ -35,10 +40,23 @@ const PurchaseOrderPage = () => {
   );
   const fetchOrders = async (page: number = 1) => {
     try {
-      const res = await getAllPurchaseOrders();
-      setOrders(res.purchaseOrders);
-      setTotalPages(1);
-      setCurrentPage(page);
+      const {
+        purchaseOrders,
+        totalPages,
+        page: currentPage,
+      } = await getAllPurchaseOrders(page);
+      const orders = (purchaseOrders || []).map((o: any) => {
+        const s = o?.supplierId; // could be string or {_id,name}
+        return {
+          ...o,
+          supplierName: typeof s === "string" ? "" : s?.name ?? "",
+          supplierId: typeof s === "string" ? s : s?._id ?? "",
+        };
+      });
+
+      setOrders(orders);
+      setTotalPages(totalPages);
+      setCurrentPage(currentPage);
     } catch (err) {
       console.log(err);
       setError("Failed to fetch purchase orders.");
@@ -67,8 +85,8 @@ const PurchaseOrderPage = () => {
         pendingUpdate.id,
         pendingUpdate.newStatus
       );
+      await fetchOrders(currentPage);
       setMessage("Order status updated.");
-      fetchOrders(currentPage);
     } catch {
       setError("Failed to update status.");
     } finally {
@@ -76,9 +94,19 @@ const PurchaseOrderPage = () => {
       setPendingUpdate(null);
     }
   };
-  const handleViewOrder = (order: PurchaseOrder) => {
-    setSelectedOrder(order);
-    alert(`Order #${order.orderNumber} — total $${order.total}`);
+  const handleViewOrder = async (order: PurchaseOrder) => {
+    setSelectedOrderId(order._id);
+
+    try {
+      const data = await getPurchaseOrderById(order._id);
+      // merge items into order for the modal’s convenience
+      setOrderDetails({
+        order: { ...data.order, items: data.items },
+        items: data.items,
+      });
+    } catch {
+      setOrderDetails(null);
+    }
   };
   useEffect(() => {
     fetchOrders();
@@ -102,7 +130,7 @@ const PurchaseOrderPage = () => {
       {message && <ToastMessage message={message} type="success" />}
       {error && <ToastMessage message={error} type="error" />}
       <div className="flex flex-col md:flex-row gap-4">
-        <div className="w-full md:1/3 bg-white dark:bg-gray-800 p-4 rounded shadow">
+        <div className="w-full md:w-1/3 bg-white dark:bg-gray-800 p-4 rounded shadow">
           <AddPurchaseOrderForm
             onSubmit={handleCreatePO}
             onSuccess={() => fetchOrders(currentPage)}
@@ -127,10 +155,15 @@ const PurchaseOrderPage = () => {
         </div>
       </div>
       <ConfirmDialog
+        name="Ok"
         isOpen={confirmOpen}
         onCancel={() => setConfirmOpen(false)}
         onConfirm={confirmStatusChange}
         message={`Change status to "${pendingUpdate?.newStatus}"?`}
+      />
+      <ViewOrderModal
+        order={orderDetails?.order ?? null}
+        onCancel={() => setOrderDetails(null)}
       />
     </DashboardPage>
   );

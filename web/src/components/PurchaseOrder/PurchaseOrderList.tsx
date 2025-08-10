@@ -41,7 +41,7 @@ const PurchaseOrderList = ({ orders, onStatusChange, onView }: Props) => {
               {order.orderNumber}
             </td>
             <td className="px-4 py-2 text-gray-700 dark:text-white">
-              {order.supplierName || order.supplierId}
+              {order.supplierName}
             </td>
             <td className="px-4 py-2 text-gray-700 dark:text-white">
               {order.totalAmount.toFixed(2)}

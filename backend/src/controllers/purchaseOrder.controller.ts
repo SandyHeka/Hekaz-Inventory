@@ -6,6 +6,7 @@ import { Product } from "../models/Product";
 export const createPurchaseOrder = async (req: Request, res: Response) => {
   try {
     const { supplierId, items } = req.body;
+
     if (!supplierId || !Array.isArray(items) || items.length === 0) {
       return res.status(400).json({ error: "Invalid order data" });
     }
@@ -34,7 +35,7 @@ export const createPurchaseOrder = async (req: Request, res: Response) => {
     }));
 
     await PurchaseOrderItem.insertMany(orderItem, { session });
-
+    console.log(orderItem);
     await session.commitTransaction();
     session.endSession();
 
@@ -46,10 +47,18 @@ export const createPurchaseOrder = async (req: Request, res: Response) => {
 
 export const getAllPurchaseOrder = async (req: Request, res: Response) => {
   try {
-    const orders = await PurchaseOrder.find()
-      .populate("supplierId", "name")
-      .sort({ createdAt: -1 });
-    res.json(orders);
+    const page = parseInt(req.query.page as string) || 1;
+    const limit = parseInt(req.query.limit as string) || 10;
+    const skip = (page - 1) * limit;
+    const [orders, total] = await Promise.all([
+      PurchaseOrder.find()
+        .skip(skip)
+        .limit(limit)
+        .populate("supplierId", "name")
+        .sort({ createdAt: -1 }),
+      PurchaseOrder.countDocuments(),
+    ]);
+    res.json({ orders, total, page, totalPages: Math.ceil(total / limit) });
   } catch (error) {
     res.status(500).json({ error: "Internal server error" });
   }
@@ -62,10 +71,10 @@ export const getPurchaseOrderById = async (req: Request, res: Response) => {
       "supplierId",
       "name"
     );
+    if (!order) return res.status(404).json({ error: "Order not found" });
     const items = await PurchaseOrderItem.find({
       purchaseOrderId: id,
     }).populate("productId", "name");
-    if (!order) return res.status(404).json({ error: "Order not found" });
     res.json({ order, items });
   } catch (error) {
     res.status(500).json({ error: "Internal Server Error" });

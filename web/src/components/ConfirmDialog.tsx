@@ -1,13 +1,20 @@
 import React from "react";
 
 type Props = {
+  name: string;
   isOpen: boolean;
   onConfirm: () => void;
   onCancel: () => void;
   message: string;
 };
 
-const ConfirmDialog = ({ isOpen, onConfirm, onCancel, message }: Props) => {
+const ConfirmDialog = ({
+  name,
+  isOpen,
+  onConfirm,
+  onCancel,
+  message,
+}: Props) => {
   if (!isOpen) return null;
   return (
     <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
@@ -24,7 +31,7 @@ const ConfirmDialog = ({ isOpen, onConfirm, onCancel, message }: Props) => {
             onClick={onConfirm}
             className="px-4 py-2 rounded bg-red-600 text-white hover:bg-red-700"
           >
-            Delete
+            {name === "delete" ? "Delete" : "Ok"}
           </button>
         </div>
       </div>

@@ -3,9 +3,10 @@ import type {
   PurchaseOrderForm,
   PurchaseOrderItemForm,
 } from "../../types/PurchaseOrderTypes";
-import ToastMessage from "../ToastMessage";
+
 import { getAllDealers } from "../../api/dealersService";
 import { getProductsByDealer } from "../../api/productService";
+import type { Product } from "../../types/ProductTypes";
 
 type Props = {
   onSubmit: (form: PurchaseOrderForm) => Promise<void>;
@@ -18,8 +19,10 @@ const AddPurchaseOrderForm = ({ onSubmit, onSuccess }: Props) => {
     items: [{ productId: "", quantity: 1, unitPrice: 0 }],
   });
 
-  const [suppliers, setSuppliers] = useState<any[]>([]);
-  const [products, setProducts] = useState<any[]>([]);
+  const [suppliers, setSuppliers] = useState<{ _id: string; name: string }[]>(
+    []
+  );
+  const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
@@ -33,7 +36,8 @@ const AddPurchaseOrderForm = ({ onSubmit, onSuccess }: Props) => {
     const fetchDealers = async () => {
       try {
         const dealerRes = await getAllDealers();
-        setSuppliers(dealerRes.dealers); // ✅ FIX: extract the actual array
+
+        setSuppliers(dealerRes.dealer || []);
       } catch {
         setSuppliers([]);
         console.error("Failed to fetch suppliers");
@@ -102,6 +106,16 @@ const AddPurchaseOrderForm = ({ onSubmit, onSuccess }: Props) => {
     }
   };
 
+  useEffect(() => {
+    if (message || error) {
+      const timer = setTimeout(() => {
+        setMessage("");
+        setError("");
+      }, 3000); // Hide after 3 seconds
+
+      return () => clearTimeout(timer);
+    }
+  }, [message, error]);
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <h3 className="text-lg font-semibold text-gray-800 dark:text-white">
@@ -193,9 +207,6 @@ const AddPurchaseOrderForm = ({ onSubmit, onSuccess }: Props) => {
       <div className="text-right text-lg font-semibold dark:text-white">
         Total: ${totalAmount.toFixed(2)}
       </div>
-
-      {message && <ToastMessage message={message} type="success" />}
-      {error && <ToastMessage message={error} type="error" />}
 
       <button
         type="submit"

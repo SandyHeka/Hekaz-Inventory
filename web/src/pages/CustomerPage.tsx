@@ -127,6 +127,7 @@ const CustomerPage = () => {
         </div>
       </div>
       <ConfirmDialog
+        name="delete"
         isOpen={confirmOpen}
         onCancel={() => setConfirmOpen(false)}
         onConfirm={confirmDelete}
