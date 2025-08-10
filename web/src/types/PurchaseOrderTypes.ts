@@ -1,5 +1,6 @@
+export type POStatus = "Draft" | "Ordered" | "Completed" | "Cancelled";
 export interface PurchaseOrderItemForm {
-  productId: string;
+  productId: string | { _id: string; name: string };
   quantity: number;
   unitPrice: number;
 }
@@ -19,7 +20,7 @@ export interface PurchaseOrder {
   supplierId: string | { _id: string; name: string };
   supplierName?: string;
   orderNumber: string;
-  status: "Draft" | "Ordered" | "Received" | "Completed";
+  status: POStatus;
   totalAmount: number;
   date: string;
   createdAt: string;

@@ -28,10 +28,7 @@ export const getAllPurchaseOrders = async (
   };
 };
 
-export const updatePurchaseOrderStatus = async (
-  id: string,
-  status: string
-): Promise<any> => {
+export const updatePurchaseOrderStatus = async (id: string, status: string) => {
   const res = await API.patch(`/purchase-orders/${id}/status`, { status });
   return res.data;
 };

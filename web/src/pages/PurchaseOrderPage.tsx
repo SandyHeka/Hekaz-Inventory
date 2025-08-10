@@ -86,7 +86,11 @@ const PurchaseOrderPage = () => {
         pendingUpdate.newStatus
       );
       await fetchOrders(currentPage);
-      setMessage("Order status updated.");
+      setMessage(
+        pendingUpdate.newStatus === "Completed"
+          ? "Order completed and stock updated."
+          : "Order status updated."
+      );
     } catch {
       setError("Failed to update status.");
     } finally {

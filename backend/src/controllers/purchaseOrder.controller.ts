@@ -3,6 +3,10 @@ import PurchaseOrder from "../models/PurchaseOrder";
 import PurchaseOrderItem from "../models/PurchaseOrderItem";
 import { Request, Response } from "express";
 import { Product } from "../models/Product";
+
+const ORDER = ["Draft", "Ordered", "Completed", "Cancelled"] as const;
+type StatusType = (typeof ORDER)[number];
+const rank = (s: StatusType) => ORDER.indexOf(s);
 export const createPurchaseOrder = async (req: Request, res: Response) => {
   try {
     const { supplierId, items } = req.body;
@@ -85,28 +89,66 @@ export const updatePurchaseOrderStatus = async (
   req: Request,
   res: Response
 ) => {
+  const { id } = req.params;
+  const { status: nextStatus } = req.body as { status: StatusType };
+
   try {
-    const { id } = req.params;
-    const { status } = req.body;
-
-    const order = await PurchaseOrder.findById(id);
-    if (!order) return res.status(404).json({ error: "Order not found" });
-
-    if (status === "Received" && order.status !== "Received") {
-      const items = await PurchaseOrderItem.findById({ purchaseOrderId: id });
-
-      for (const item of items) {
-        await Product.findByIdAndUpdate(item.productId, {
-          $inc: { quantity: item.quantity },
-        });
-      }
+    if (!ORDER.includes(nextStatus)) {
+      return res.status(400).json({ error: "Invalid status" });
     }
 
-    order.status = status;
-    await order.save();
+    const po = await PurchaseOrder.findById(id);
+    if (!po) return res.status(404).json({ error: "Purchase order not found" });
 
-    res.json({ message: "Status updated", order });
-  } catch (error) {
-    res.status(500).json({ error: "Internal Server Error" });
+    // no going backwards
+    if (rank(nextStatus) < rank(po.status)) {
+      return res.status(400).json({ error: "Cannot move status backwards" });
+    }
+    // cancelled is terminal
+    if (po.status === "Cancelled" && nextStatus !== "Cancelled") {
+      return res.status(400).json({ error: "Cancelled orders cannot change" });
+    }
+
+    // Apply stock only once when first entering Completed
+    if (nextStatus === "Completed" && !po.stockApplied) {
+      const session = await mongoose.startSession();
+      session.startTransaction();
+      try {
+        const items = await PurchaseOrderItem.find({
+          purchaseOrderId: po._id,
+        }).session(session);
+
+        for (const it of items) {
+          await Product.updateOne(
+            { _id: it.productId },
+            { $inc: { currentStock: it.quantity } },
+            { session }
+          );
+        }
+
+        po.stockApplied = true;
+        po.status = nextStatus;
+        await po.save({ session });
+
+        await session.commitTransaction();
+        session.endSession();
+      } catch (e) {
+        await session.abortTransaction();
+        session.endSession();
+        throw e;
+      }
+    } else {
+      po.status = nextStatus;
+      await po.save();
+    }
+
+    const updated = await PurchaseOrder.findById(id).populate(
+      "supplierId",
+      "name"
+    );
+    return res.json({ purchaseOrder: updated });
+  } catch (err) {
+    console.error("updatePurchaseOrderStatus error:", err);
+    return res.status(500).json({ error: "Internal server error" });
   }
 };

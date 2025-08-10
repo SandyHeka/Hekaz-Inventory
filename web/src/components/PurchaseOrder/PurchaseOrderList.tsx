@@ -1,13 +1,17 @@
 import { FaEye } from "react-icons/fa";
-import type { PurchaseOrder } from "../../types/PurchaseOrderTypes";
+import type { POStatus, PurchaseOrder } from "../../types/PurchaseOrderTypes";
 
+const nextStatuses: Record<POStatus, POStatus[]> = {
+  Draft: ["Ordered", "Cancelled"],
+  Ordered: ["Completed", "Cancelled"],
+  Completed: [],
+  Cancelled: [],
+};
 type Props = {
   orders: PurchaseOrder[];
-  onStatusChange: (id: string, newStatus: string) => void;
+  onStatusChange: (id: string, status: POStatus) => void;
   onView: (order: PurchaseOrder) => void;
 };
-
-const statusOptions = ["Draft", "Ordered", "Received", "Completed"];
 
 const PurchaseOrderList = ({ orders, onStatusChange, onView }: Props) => {
   return (
@@ -35,43 +39,50 @@ const PurchaseOrderList = ({ orders, onStatusChange, onView }: Props) => {
         </tr>
       </thead>
       <tbody>
-        {orders.map((order) => (
-          <tr className="border-t" key={order._id}>
-            <td className="px-4 py-2 font-medium text-gray-900 dark:text-white">
-              {order.orderNumber}
-            </td>
-            <td className="px-4 py-2 text-gray-700 dark:text-white">
-              {order.supplierName}
-            </td>
-            <td className="px-4 py-2 text-gray-700 dark:text-white">
-              {order.totalAmount.toFixed(2)}
-            </td>
-            <td className="px-4 py-2 text-gray-700 dark:text-white">
-              {new Date(order.date).toLocaleDateString()}
-            </td>
-            <td className="px-4 py-2">
-              <select
-                value={order.status}
-                onChange={(e) => onStatusChange(order._id, e.target.value)}
-                className="bg-white dark:bg-gray-700 text-gray-800 dark:text-white border rounded px-2 py-1"
-              >
-                {statusOptions.map((status) => (
-                  <option key={status} value={status}>
-                    {status}
-                  </option>
-                ))}
-              </select>
-            </td>
-            <td className="px-4 py-2 flex gap-2">
-              <button
-                className="text-blue-500 hover:text-blue-700"
-                onClick={() => onView(order)}
-              >
-                <FaEye />
-              </button>
-            </td>
-          </tr>
-        ))}
+        {(orders ?? []).map((o) => {
+          const supplier =
+            o.supplierName ||
+            (typeof o.supplierId === "string"
+              ? o.supplierId
+              : o.supplierId?.name ?? "");
+          const canChange = nextStatuses[o.status];
+
+          return (
+            <tr key={o._id} className="border-t">
+              <td className="px-4 py-2">{o.orderNumber}</td>
+              <td className="px-4 py-2">{supplier}</td>
+              <td className="px-4 py-2">
+                <select
+                  value={o.status}
+                  onChange={(e) =>
+                    onStatusChange(o._id, e.target.value as POStatus)
+                  }
+                  disabled={canChange.length === 0}
+                  className="p-1 border rounded dark:bg-gray-700 dark:text-white"
+                >
+                  <option value={o.status}>{o.status}</option>
+                  {canChange.map((ns) => (
+                    <option key={ns} value={ns}>
+                      {ns}
+                    </option>
+                  ))}
+                </select>
+              </td>
+              <td className="px-4 py-2">${Number(o.totalAmount).toFixed(2)}</td>
+              <td className="px-4 py-2">
+                {new Date(o.createdAt).toLocaleDateString()}
+              </td>
+              <td className="px-4 py-2">
+                <button
+                  onClick={() => onView(o)}
+                  className="px-3 py-1 rounded bg-blue-600 text-white hover:bg-blue-700"
+                >
+                  View
+                </button>
+              </td>
+            </tr>
+          );
+        })}
       </tbody>
     </table>
   );
