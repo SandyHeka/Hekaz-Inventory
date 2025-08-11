@@ -19,6 +19,7 @@ import type {
   SalesOrderForm,
   SOStatus,
 } from "../types/SalesOrderTypes";
+import ViewSaleOrderModal from "../components/SalesOrder/ViewSaleOrderModal";
 
 const SalesOrderPage = () => {
   const [orders, setOrders] = useState<SalesOrder[]>([]);
@@ -30,6 +31,11 @@ const SalesOrderPage = () => {
   const [pending, setPending] = useState<{
     id: string;
     status: SOStatus;
+  } | null>(null);
+  const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null);
+  const [orderDetails, setOrderDetails] = useState<{
+    order: SalesOrder;
+    items: any[];
   } | null>(null);
 
   const fetchOrders = async (page = 1) => {
@@ -94,11 +100,18 @@ const SalesOrderPage = () => {
     }
   };
 
-  const handleView = async (o: SalesOrder) => {
-    // optional: you can show a modal like PO; reusing your ViewOrderModal with minor renaming works.
-    const { order, items } = await getSalesOrderById(o._id);
-    console.log("Sales Order details:", order, items);
-    alert(`Sales Order #${o.orderNumber}\nItems: ${items.length}`);
+  const handleView = async (ord: SalesOrder) => {
+    setSelectedOrderId(ord._id);
+    try {
+      // optional: you can show a modal like PO; reusing your ViewOrderModal with minor renaming works.
+      const data = await getSalesOrderById(ord._id);
+      setOrderDetails({
+        order: { ...data.order, items: data.items },
+        items: data.items,
+      });
+    } catch {
+      setOrderDetails(null);
+    }
   };
 
   return (
@@ -140,6 +153,10 @@ const SalesOrderPage = () => {
         onCancel={() => setConfirmOpen(false)}
         onConfirm={confirmStatusChange}
         message={`Change status to "${pending?.status}"?`}
+      />
+      <ViewSaleOrderModal
+        order={orderDetails?.order ?? null}
+        onCancel={() => setOrderDetails(null)}
       />
     </DashboardPage>
   );

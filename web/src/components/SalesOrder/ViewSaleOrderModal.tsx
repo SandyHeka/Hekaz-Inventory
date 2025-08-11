@@ -1,11 +1,11 @@
-import type { PurchaseOrder } from "../../types/PurchaseOrderTypes";
+import type { SalesOrder } from "../../types/SalesOrderTypes";
 import { exportPurchaseOrderPdf } from "../../utils/pdf";
 
 type Props = {
-  order: PurchaseOrder | null;
+  order: SalesOrder | null;
   onCancel: () => void;
 };
-export default function ViewOrderModal({ order, onCancel }: Props) {
+export default function ViewSaleOrderModal({ order, onCancel }: Props) {
   if (!order) return null;
   const productLabel = (pid: any) =>
     typeof pid === "string" ? pid : pid?.name ?? "";
@@ -19,7 +19,7 @@ export default function ViewOrderModal({ order, onCancel }: Props) {
           <div className="flex gap-40">
             <div className="flex-row">
               <p>
-                <strong>Supplier: </strong> {order.supplierName}
+                <strong>Customer: </strong> {order.customerName}
               </p>
               <p>
                 <strong>Status: </strong>

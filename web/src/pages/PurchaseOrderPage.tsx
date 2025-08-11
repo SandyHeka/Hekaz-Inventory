@@ -35,9 +35,6 @@ const PurchaseOrderPage = () => {
     newStatus: string;
   } | null>(null);
 
-  const [selectedOrder, setSelectedOrder] = useState<PurchaseOrder | null>(
-    null
-  );
   const fetchOrders = async (page: number = 1) => {
     try {
       const {
