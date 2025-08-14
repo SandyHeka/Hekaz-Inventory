@@ -10,6 +10,7 @@ import userRoutes from "./routes/user.routes";
 import customerRoutes from "./routes/customer.routes";
 import purchaseOrderRoutes from "./routes/purchaseOrder.routes";
 import salesOrderRoutes from "./routes/salesOrder.routes";
+import analyticsRoutes from "./routes/analytics.routes";
 const app = express();
 
 app.use(cors());
@@ -25,6 +26,7 @@ app.use("/api/inventory", inventoryRoutes);
 app.use("/api/purchase-orders", purchaseOrderRoutes);
 app.use("/api/sales-orders", salesOrderRoutes);
 app.use("/uploads", express.static("uploads"));
+app.use("/api/analytics", analyticsRoutes);
 app.get("/api/health", (_req, res) => {
   res.status(200).json({ message: "API is healthy " });
 });

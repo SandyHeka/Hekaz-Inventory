@@ -60,17 +60,9 @@ const Sidebar = ({
           <ShoppingBasket size={20} />
           {!collapsed && <span className="text-lg">Products</span>}
         </Link>
-        <Link to="/sales-orders" className="flex items-center gap-3">
-          <BringToFrontIcon size={20} />
-          {!collapsed && <span className="text-lg">Sales Orders</span>}
-        </Link>
-        <Link to="/customers" className="flex items-center gap-3">
-          <UsersRound size={20} />
-          {!collapsed && <span className="text-lg">Customer</span>}
-        </Link>
         <Link to="/dealer" className="flex items-center gap-3">
           <Factory size={20} />
-          {!collapsed && <span className="text-lg">Dealers</span>}
+          {!collapsed && <span className="text-lg">Suppliers</span>}
         </Link>
         <Link to="/category" className="flex items-center gap-3">
           <LibraryBig size={20} />
@@ -79,6 +71,10 @@ const Sidebar = ({
         <Link to="/brand" className="flex items-center gap-3">
           <GiBrandyBottle size={20} />
           {!collapsed && <span className="text-lg">Brand</span>}
+        </Link>
+        <Link to="/customers" className="flex items-center gap-3">
+          <UsersRound size={20} />
+          {!collapsed && <span className="text-lg">Customer</span>}
         </Link>
         <Link to="/inventory" className="flex items-center gap-3">
           <GiBrandyBottle size={20} />
@@ -93,6 +89,10 @@ const Sidebar = ({
         <Link to="/purchase-orders" className="flex items-center gap-3">
           <GiBrandyBottle size={20} />
           {!collapsed && <span className="text-lg">Purchase Orders</span>}
+        </Link>
+        <Link to="/sales-orders" className="flex items-center gap-3">
+          <BringToFrontIcon size={20} />
+          {!collapsed && <span className="text-lg">Sales Orders</span>}
         </Link>
       </nav>
     </aside>

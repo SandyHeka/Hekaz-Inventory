@@ -63,7 +63,7 @@ const AddDealerForm = ({
         name="name"
         value={form.name}
         onChange={handleChange}
-        placeholder="Dealer Name"
+        placeholder="Supplier Name"
         className="w-full p-2 border rounded dark:bg-gray-700 dark:text-white"
         required
       />

@@ -20,6 +20,7 @@ import { Toaster } from "react-hot-toast";
 import CustomerPage from "./pages/CustomerPage";
 import PurchaseOrderPage from "./pages/PurchaseOrderPage";
 import SalesOrderPage from "./pages/SalesOrderPage";
+import AnalyticsPage from "./pages/AnalyticsPage";
 function App() {
   return (
     <>
@@ -128,7 +129,7 @@ function App() {
             path="/"
             element={
               <PrivateRoute>
-                <DashboardPage>{""}</DashboardPage>
+                <AnalyticsPage></AnalyticsPage>
               </PrivateRoute>
             }
           />

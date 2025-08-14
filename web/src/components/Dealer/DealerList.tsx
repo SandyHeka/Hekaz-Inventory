@@ -15,7 +15,7 @@ const DealerList = ({ dealers, onDelete, onEdit }: Props) => {
       <thead className="bg-gray-100 dark:bg-gray-800">
         <tr>
           <th className="px-4 py-2 font-medium text-gray-800 dark:text-gray-50">
-            Dealer Name
+            Supplier Name
           </th>
           <th className="px-4 py-2 font-medium text-gray-800 dark:text-gray-50">
             Email

@@ -97,7 +97,7 @@ const DealerPage = () => {
   return (
     <DashboardPage>
       <h2 className="text-2xl font-bold mb-6 text-gray-800 dark:text-gray-50">
-        Dealer Management
+        Supplier Management
       </h2>
       {message && <ToastMessage message={message} type="success" />}
       {error && <ToastMessage message={error} type="error" />}
@@ -116,11 +116,11 @@ const DealerPage = () => {
 
         <div className="md:w-full bg-white dark:bg-gray-800 p-4 rounded shadow overflow-x-auto">
           <h3 className="text-lg font-semibold mb-4 text-gray-800 dark:text-gray-50">
-            Dealer List
+            Supplier List
           </h3>
           {loading ? (
             <p className="text-gray-600 dark:text-gray-300 text-center">
-              Loading dealers...
+              Loading Suppliers...
             </p>
           ) : dealers.length > 0 ? (
             <div className="md:w-full bg-white dark:bg-gray-800 p-4 rounded shadow overflow-x-auto">
@@ -137,7 +137,7 @@ const DealerPage = () => {
             </div>
           ) : (
             <p className="text-gray-500 dark:text-gray-300 text-lg font-medium">
-              No dealers found.
+              No Suppliers found.
             </p>
           )}
         </div>
