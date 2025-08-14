@@ -56,35 +56,37 @@ const Sidebar = ({
           <LayoutDashboard size={20} />
           {!collapsed && <span className="text-lg">Dashboard</span>}
         </Link>
-        <Link to="/products" className="flex items-center gap-3">
-          <ShoppingBasket size={20} />
-          {!collapsed && <span className="text-lg">Products</span>}
-        </Link>
-        <Link to="/dealer" className="flex items-center gap-3">
-          <Factory size={20} />
-          {!collapsed && <span className="text-lg">Suppliers</span>}
-        </Link>
-        <Link to="/category" className="flex items-center gap-3">
-          <LibraryBig size={20} />
-          {!collapsed && <span className="text-lg">Category</span>}
-        </Link>
-        <Link to="/brand" className="flex items-center gap-3">
-          <GiBrandyBottle size={20} />
-          {!collapsed && <span className="text-lg">Brand</span>}
-        </Link>
         <Link to="/customers" className="flex items-center gap-3">
           <UsersRound size={20} />
           {!collapsed && <span className="text-lg">Customer</span>}
         </Link>
-        <Link to="/inventory" className="flex items-center gap-3">
-          <GiBrandyBottle size={20} />
-          {!collapsed && <span className="text-lg">Inventory</span>}
-        </Link>
         {user?.role === "admin" && (
-          <Link to="/users" className="flex items-center gap-3">
-            <User2 size={20} />
-            {!collapsed && <span className="text-lg">Users</span>}
-          </Link>
+          <>
+            <Link to="/products" className="flex items-center gap-3">
+              <ShoppingBasket size={20} />
+              {!collapsed && <span className="text-lg">Products</span>}
+            </Link>
+            <Link to="/dealer" className="flex items-center gap-3">
+              <Factory size={20} />
+              {!collapsed && <span className="text-lg">Suppliers</span>}
+            </Link>
+            <Link to="/category" className="flex items-center gap-3">
+              <LibraryBig size={20} />
+              {!collapsed && <span className="text-lg">Category</span>}
+            </Link>
+            <Link to="/brand" className="flex items-center gap-3">
+              <GiBrandyBottle size={20} />
+              {!collapsed && <span className="text-lg">Brand</span>}
+            </Link>
+            <Link to="/users" className="flex items-center gap-3">
+              <User2 size={20} />
+              {!collapsed && <span className="text-lg">Users</span>}
+            </Link>
+            <Link to="/inventory" className="flex items-center gap-3">
+              <GiBrandyBottle size={20} />
+              {!collapsed && <span className="text-lg">Inventory</span>}
+            </Link>
+          </>
         )}{" "}
         <Link to="/purchase-orders" className="flex items-center gap-3">
           <GiBrandyBottle size={20} />

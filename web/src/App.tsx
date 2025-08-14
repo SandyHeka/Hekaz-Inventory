@@ -48,49 +48,49 @@ function App() {
           <Route
             path="/products"
             element={
-              <PrivateRoute>
+              <ProtectedRoute>
                 <ProductListPage />
-              </PrivateRoute>
+              </ProtectedRoute>
             }
           />
           <Route
             path="/category"
             element={
-              <PrivateRoute>
+              <ProtectedRoute>
                 <CategoryPage />
-              </PrivateRoute>
+              </ProtectedRoute>
             }
           />
           <Route
             path="/brand"
             element={
-              <PrivateRoute>
+              <ProtectedRoute>
                 <BrandPage />
-              </PrivateRoute>
+              </ProtectedRoute>
             }
           />
           <Route
             path="/dealer"
             element={
-              <PrivateRoute>
+              <ProtectedRoute>
                 <DealerPage />
-              </PrivateRoute>
+              </ProtectedRoute>
             }
           />
           <Route
             path="/inventory"
             element={
-              <PrivateRoute>
+              <ProtectedRoute>
                 <InventoryPage />
-              </PrivateRoute>
+              </ProtectedRoute>
             }
           />
           <Route
             path="/dealers/:dealerId/products"
             element={
-              <PrivateRoute>
+              <ProtectedRoute>
                 <DealerProductPage />
-              </PrivateRoute>
+              </ProtectedRoute>
             }
           />
           <Route
