@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { Product } from "../models/Product";
 import fs from "fs";
 import path from "path";
+import { canSoftDeleteProduct } from "../utils/deleteGuards";
 // CREATE
 export const createProduct = async (req: Request, res: Response) => {
   try {
@@ -120,10 +121,23 @@ export const updateProduct = async (req: Request, res: Response) => {
 // DELETE
 export const deleteProduct = async (req: Request, res: Response) => {
   try {
-    const deleted = await Product.findByIdAndDelete(req.params.id);
-    if (!deleted) return res.status(404).json({ error: "Product not found" });
-    res.json({ message: "Product deleted" });
+    const { ok, reason, product } = await canSoftDeleteProduct(req.params.id);
+    if (!ok || !product) return res.status(400).json({ error: reason });
+
+    await Product.findByIdAndUpdate(
+      product._id,
+      {
+        $set: {
+          deletedAt: new Date(),
+          deletedBy: (req as any).user?._id ?? null,
+        },
+      },
+      { new: true }
+    );
+
+    return res.json({ message: "Product soft-deleted" });
   } catch (err) {
+    console.error("deleteProduct error:", err);
     res.status(500).json({ error: "Failed to delete product" });
   }
 };

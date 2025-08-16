@@ -1,4 +1,5 @@
 import mongoose, { Document, Schema } from "mongoose";
+import softDelete from "../plugins/softDelete";
 
 export interface IProduct extends Document {
   name: string;
@@ -11,6 +12,13 @@ export interface IProduct extends Document {
   barcode: string;
   imageUrl?: string;
   lowStockThreshold: number;
+  // soft-delete fields (added by plugin)
+  deletedAt?: Date | null;
+  deletedBy?: mongoose.Types.ObjectId | null;
+
+  // plugin helpers
+  softDelete?: (userId?: string) => Promise<IProduct>;
+  restore?: () => Promise<IProduct>;
 }
 
 const productSchema: Schema = new Schema<IProduct>(
@@ -27,6 +35,20 @@ const productSchema: Schema = new Schema<IProduct>(
     lowStockThreshold: { type: Number, default: 5 },
   },
   { timestamps: true }
+);
+// 🔌 apply plugin
+productSchema.plugin(softDelete);
+
+// 🔎 helpful indexes
+productSchema.index({ deletedAt: 1 });
+productSchema.index({ dealer: 1, deletedAt: 1 });
+productSchema.index({ brand: 1, deletedAt: 1 });
+productSchema.index({ category: 1, deletedAt: 1 });
+
+// ✅ make barcode unique **only** among non-deleted docs
+productSchema.index(
+  { barcode: 1 },
+  { unique: true, partialFilterExpression: { deletedAt: null } }
 );
 
 export const Product = mongoose.model<IProduct>("Product", productSchema);
