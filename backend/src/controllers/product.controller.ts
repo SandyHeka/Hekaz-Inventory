@@ -3,6 +3,9 @@ import { Product } from "../models/Product";
 import fs from "fs";
 import path from "path";
 import { canSoftDeleteProduct } from "../utils/deleteGuards";
+import SalesOrderItem from "../models/SalesOrderItem";
+import PurchaseOrderItem from "../models/PurchaseOrderItem";
+import mongoose from "mongoose";
 // CREATE
 export const createProduct = async (req: Request, res: Response) => {
   try {
@@ -118,14 +121,86 @@ export const updateProduct = async (req: Request, res: Response) => {
   }
 };
 
-// DELETE
 export const deleteProduct = async (req: Request, res: Response) => {
   try {
-    const { ok, reason, product } = await canSoftDeleteProduct(req.params.id);
-    if (!ok || !product) return res.status(400).json({ error: reason });
+    const id = req.params.id;
 
+    if (!mongoose.isValidObjectId(id)) {
+      console.warn("DELETE product invalid id", id);
+      return res.status(400).json({ error: "Invalid product id" });
+    }
+
+    const prod = await Product.findOne({ _id: id, deletedAt: null });
+    if (!prod) {
+      console.warn("DELETE product not found or already deleted", id);
+      return res
+        .status(404)
+        .json({ error: "Product not found or already deleted" });
+    }
+
+    if (Number(prod.currentStock) > 0) {
+      console.warn("DELETE blocked: stock on hand", {
+        id,
+        currentStock: prod.currentStock,
+      });
+      return res
+        .status(400)
+        .json({ error: "Cannot delete: product has stock on hand" });
+    }
+
+    const pid = new mongoose.Types.ObjectId(id);
+
+    // Completed POs?
+    const usedInCompletedPO = await PurchaseOrderItem.aggregate([
+      { $match: { productId: pid } },
+      {
+        $lookup: {
+          from: "purchaseorders",
+          localField: "purchaseOrderId",
+          foreignField: "_id",
+          as: "po",
+        },
+      },
+      { $unwind: "$po" },
+      { $match: { "po.status": "Completed" } },
+      { $limit: 1 },
+    ]);
+    if (usedInCompletedPO.length > 0) {
+      console.warn("DELETE blocked: used in completed PO", { id });
+      return res
+        .status(400)
+        .json({
+          error: "Cannot delete: product is used in a completed Purchase Order",
+        });
+    }
+
+    // Completed SOs?
+    const usedInCompletedSO = await SalesOrderItem.aggregate([
+      { $match: { productId: pid } },
+      {
+        $lookup: {
+          from: "salesorders",
+          localField: "salesOrderId",
+          foreignField: "_id",
+          as: "so",
+        },
+      },
+      { $unwind: "$so" },
+      { $match: { "so.status": "Completed" } },
+      { $limit: 1 },
+    ]);
+    if (usedInCompletedSO.length > 0) {
+      console.warn("DELETE blocked: used in completed SO", { id });
+      return res
+        .status(400)
+        .json({
+          error: "Cannot delete: product is used in a completed Sales Order",
+        });
+    }
+
+    // Soft delete
     await Product.findByIdAndUpdate(
-      product._id,
+      id,
       {
         $set: {
           deletedAt: new Date(),
@@ -135,13 +210,13 @@ export const deleteProduct = async (req: Request, res: Response) => {
       { new: true }
     );
 
+    console.info("DELETE product soft-deleted", id);
     return res.json({ message: "Product soft-deleted" });
   } catch (err) {
     console.error("deleteProduct error:", err);
     res.status(500).json({ error: "Failed to delete product" });
   }
 };
-
 export const getProductsByDealer = async (req: Request, res: Response) => {
   try {
     const page = parseInt(req.query.page as string) || 1;

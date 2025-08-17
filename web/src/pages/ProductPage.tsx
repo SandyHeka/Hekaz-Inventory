@@ -76,8 +76,10 @@ const ProductListPage = () => {
       await deleteProduct(pendingDeleteId);
       setProducts((prev) => prev.filter((p) => p._id !== pendingDeleteId));
       setMessage("Product has been deleted");
-    } catch {
-      alert("Failed to delete product");
+    } catch (e: any) {
+      const msg =
+        e?.response?.data?.error || e?.message || "Failed to delete product";
+      setError(msg);
     } finally {
       setConfirmOpen(false);
       setPendingDeleteId(null);
