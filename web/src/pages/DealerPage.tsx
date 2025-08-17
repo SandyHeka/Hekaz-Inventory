@@ -82,8 +82,10 @@ const DealerPage = () => {
       await deleteDealer(pendingDeleteId);
       setDealers((prev) => prev.filter((d) => d._id !== pendingDeleteId));
       setMessage("Dealer deleted successfully");
-    } catch {
-      setError("Failed to delete dealer");
+    } catch (e: any) {
+      const msg =
+        e?.response?.data?.error || e?.message || "Failed to delete supplier";
+      setError(msg);
     } finally {
       setConfirmOpen(false);
       setPendingDeleteId(null);

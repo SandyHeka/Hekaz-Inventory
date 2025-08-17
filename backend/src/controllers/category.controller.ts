@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { Category } from "../models/Category";
 import { Product } from "../models/Product";
+import mongoose from "mongoose";
 
 export const createCategory = async (req: Request, res: Response) => {
   try {
@@ -60,8 +61,16 @@ export const updateCategory = async (req: Request, res: Response) => {
 export const deleteCategory = async (req: Request, res: Response) => {
   try {
     const categoryId = req.params.id;
-    const usedInProducts = await Product.findOne({ catgegory: categoryId });
-    if (usedInProducts) {
+    if (!mongoose.isValidObjectId(categoryId)) {
+      console.warn("DELETE category invalid id", categoryId);
+      return res.status(400).json({ error: "Invalid product id" });
+    }
+
+    const usedInProducts = await Product.findOne({
+      _id: categoryId,
+      deletedAt: null,
+    });
+    if (!usedInProducts) {
       return res.status(400).json({
         error: "Cannot delete: Catgeory is associated with existing products.",
       });

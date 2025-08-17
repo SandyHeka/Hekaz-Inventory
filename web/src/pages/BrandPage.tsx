@@ -57,8 +57,10 @@ const BrandPage = () => {
       await deleteBrand(pendingDeleteId);
       setBrands((prev) => prev.filter((p) => p._id !== pendingDeleteId));
       setMessage("Brand has been deleted");
-    } catch (err: any) {
-      alert("failed to delete product");
+    } catch (e: any) {
+      const msg =
+        e?.response?.data?.error || e?.message || "Failed to delete brand";
+      setError(msg);
     } finally {
       setConfirmOpen(false);
       setPendingDeleteId(null);

@@ -65,8 +65,10 @@ const CategoryPage = () => {
       await deleteCategory(pendingDeleteId);
       setMessage("Category has been deleted");
       setCategory((prev) => prev.filter((cat) => cat._id !== pendingDeleteId));
-    } catch {
-      alert("Failed to delete category");
+    } catch (e: any) {
+      const msg =
+        e?.response?.data?.error || e?.message || "Failed to delete catgeory";
+      setError(msg);
     } finally {
       setConfirmOpen(false);
       setPendingDeleteId(null);
