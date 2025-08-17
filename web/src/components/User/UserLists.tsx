@@ -6,9 +6,10 @@ type Props = {
   users: User[];
   onDelete: (id: string) => void;
   onEdit: (user: User) => void;
+  currentUser: any;
 };
 
-const UserList = ({ users, onDelete, onEdit }: Props) => {
+const UserList = ({ users, onDelete, onEdit, currentUser }: Props) => {
   if (!users || users.length === 0) {
     return <p className="text-gray-500">No users found.</p>;
   }
@@ -50,18 +51,23 @@ const UserList = ({ users, onDelete, onEdit }: Props) => {
               {user.role}
             </td>
             <td className="px-4 py-2 flex gap-2">
-              <button
-                onClick={() => onEdit(user)}
-                className="flex items-center gap-1 bg-blue-500 hover:bg-blue-700 text-white text-xs px-3 py-2 rounded"
-              >
-                <FaEdit />
-              </button>
-              <button
-                onClick={() => onDelete(user._id)}
-                className="flex items-center gap-1 bg-red-500 hover:bg-red-700 text-white text-xs px-3 py-2 rounded"
-              >
-                <FaTrash />
-              </button>
+              {(currentUser?.role === "admin" ||
+                currentUser?.role === "manager") && (
+                <button
+                  onClick={() => onEdit(user)}
+                  className="flex items-center gap-1 bg-blue-500 hover:bg-blue-700 text-white text-xs px-3 py-2 rounded"
+                >
+                  <FaEdit />
+                </button>
+              )}
+              {currentUser?.role === "admin" && (
+                <button
+                  onClick={() => onDelete(user._id)}
+                  className="flex items-center gap-1 bg-red-500 hover:bg-red-700 text-white text-xs px-3 py-2 rounded"
+                >
+                  <FaTrash />
+                </button>
+              )}
             </td>
           </tr>
         ))}

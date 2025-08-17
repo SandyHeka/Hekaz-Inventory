@@ -12,6 +12,7 @@ import Pagination from "../components/Pagination";
 import ConfirmDialog from "../components/ConfirmDialog";
 import UserList from "../components/User/UserLists";
 import AddUserForm from "../components/User/AddUserForm";
+import { useAuth } from "../context/AuthContext";
 
 const UserPage = () => {
   const [users, setUsers] = useState<User[]>([]);
@@ -23,6 +24,8 @@ const UserPage = () => {
   const [message, setMessage] = useState("");
   const [confirmOpen, setconfirmOpen] = useState(false);
   const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
+  const { user: currentUser } = useAuth();
+  console.log(currentUser);
 
   const fetchUsers = async (page: number = 1) => {
     try {
@@ -99,6 +102,7 @@ const UserPage = () => {
           <AddUserForm
             editingUser={editingUser}
             onSubmit={handleUserSubmit}
+            currentUser={currentUser}
             onSuccess={() => {
               fetchUsers();
               setEditingUser(null);
@@ -117,6 +121,7 @@ const UserPage = () => {
               users={users}
               onDelete={openConfirmDialog}
               onEdit={setEditingUser}
+              currentUser={currentUser}
             />
             <Pagination
               currentPage={currentPage}

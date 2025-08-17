@@ -11,7 +11,7 @@ import {
 } from "lucide-react";
 import { GiBrandyBottle } from "react-icons/gi";
 
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
 const Sidebar = ({
@@ -25,7 +25,10 @@ const Sidebar = ({
   setCollapsed: (val: boolean) => void;
   setMobileOpen: (val: boolean) => void;
 }) => {
-  const { user } = useAuth();
+  const { ready, loading, user } = useAuth();
+
+  if (!ready || loading) return <div>Loading...</div>;
+
   return (
     <aside
       className={`

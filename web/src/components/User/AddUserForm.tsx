@@ -5,9 +5,15 @@ type Props = {
   editingUser?: User | null;
   onSuccess: () => void;
   onSubmit: (formData: FormData) => Promise<void>;
+  currentUser: any;
 };
 
-const AddUserForm = ({ editingUser = null, onSuccess, onSubmit }: Props) => {
+const AddUserForm = ({
+  editingUser = null,
+  onSuccess,
+  onSubmit,
+  currentUser,
+}: Props) => {
   const [form, setForm] = useState({
     name: editingUser?.name || "",
     email: editingUser?.email || "",
@@ -74,19 +80,21 @@ const AddUserForm = ({ editingUser = null, onSuccess, onSubmit }: Props) => {
         required
         className="w-full p-2 border rounded dark:bg-gray-700 dark:text-white"
       />
+      {(form.role != "admin" || currentUser.role === "admin") && (
+        <select
+          name="role"
+          value={form.role}
+          onChange={handleChange}
+          className="w-full p-2 border rounded dark:bg-gray-700 dark:text-white"
+        >
+          {["admin", "manager", "staff"].map((role) => (
+            <option value={role} key={role}>
+              {role.charAt(0).toUpperCase() + role.slice(1)}
+            </option>
+          ))}
+        </select>
+      )}
 
-      <select
-        name="role"
-        value={form.role}
-        onChange={handleChange}
-        className="w-full p-2 border rounded dark:bg-gray-700 dark:text-white"
-      >
-        {["admin", "manager", "staff"].map((role) => (
-          <option value={role} key={role}>
-            {role.charAt(0).toUpperCase() + role.slice(1)}
-          </option>
-        ))}
-      </select>
       <button
         type="submit"
         className="bg-primary text-white px-4 py-2 rounded hover:bg-primary-dark"

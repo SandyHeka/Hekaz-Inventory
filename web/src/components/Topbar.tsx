@@ -17,7 +17,7 @@ import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 const Topbar = ({ onMobileToggle }: { onMobileToggle: () => void }) => {
   const [darkMode, setDarkMode] = useState(false);
-  const { user, token, logout } = useAuth();
+  const { user, ready, loading, token, logout } = useAuth();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -53,6 +53,7 @@ const Topbar = ({ onMobileToggle }: { onMobileToggle: () => void }) => {
     setIsModalOpen(false);
   };
 
+  if (!ready || loading) return <div>Loading...</div>;
   return (
     <header className="flex justify-between items-center p-4 bg-white dark:bg-gray-900 border-b dark:border-gray-700 md:ml-0">
       <button className="md:hidden" onClick={onMobileToggle}>
