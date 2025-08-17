@@ -77,15 +77,15 @@ const UserPage = () => {
   }, [currentPage]);
 
   useEffect(() => {
-    if (message) {
-      const timer = setTimeout(() => {
-        setMessage("");
-        setError("");
-      }, 3000); // Hide after 3 seconds
+    if (!message && !error) return;
 
-      return () => clearTimeout(timer);
-    }
-  }, [message]);
+    const timer = setTimeout(() => {
+      setMessage("");
+      setError("");
+    }, 3000);
+
+    return () => clearTimeout(timer);
+  }, [message, error]);
   return (
     <DashboardPage>
       <h2 className="text-2xl font-bold mb-6 text-gray-800 dark:text-gray-50">

@@ -78,15 +78,15 @@ const CategoryPage = () => {
     fetchCategory(currentPage);
   }, [currentPage]);
   useEffect(() => {
-    if (message) {
-      const timer = setTimeout(() => {
-        setMessage("");
-        setError("");
-      }, 3000); // 3 seconds
+    if (!message && !error) return;
 
-      return () => clearTimeout(timer); // cleanup if component unmounts
-    }
-  }, [message]);
+    const timer = setTimeout(() => {
+      setMessage("");
+      setError("");
+    }, 3000);
+
+    return () => clearTimeout(timer);
+  }, [message, error]);
   return (
     <DashboardPage>
       <h2 className="text-2xl font-bold mb-6 text-gray-800 dark:text-gray-50">
@@ -113,7 +113,6 @@ const CategoryPage = () => {
             Categories
           </h3>
 
-          {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
           <CategoryList
             categories={category}
             onDelete={openConfirmDialog}

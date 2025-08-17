@@ -1,4 +1,5 @@
 import mongoose, { Document, Schema } from "mongoose";
+import softDelete from "../plugins/softDelete";
 
 export enum BrandStatus {
   ACTIVE = "active",
@@ -10,6 +11,8 @@ export interface IBrand extends Document {
   name: string;
   imageUrl?: string;
   status: BrandStatus;
+  deletedAt?: Date | null;
+  deletedBy?: mongoose.Types.ObjectId | null;
 }
 
 const brandSchema: Schema = new Schema<IBrand>(
@@ -27,4 +30,9 @@ const brandSchema: Schema = new Schema<IBrand>(
     timestamps: true,
   }
 );
+// soft-delete
+brandSchema.plugin(softDelete);
+
+// helpful indexes
+brandSchema.index({ deletedAt: 1 });
 export const Brand = mongoose.model<IBrand>("Brand", brandSchema);

@@ -3,6 +3,7 @@ import { Brand } from "../models/Brand";
 import path from "path";
 import fs from "fs";
 import { Product } from "../models/Product";
+import mongoose from "mongoose";
 export const createBrand = async (req: Request, res: Response) => {
   try {
     const { name, status = "active" } = req.body;
@@ -28,7 +29,7 @@ export const getAllBrand = async (req: Request, res: Response) => {
   const skip = (page - 1) * limit;
   try {
     const [brands, total] = await Promise.all([
-      Brand.find().skip(skip).limit(limit),
+      Brand.find().skip(skip).limit(limit).sort({ createdAt: -1 }),
       Brand.countDocuments(),
     ]);
     const totalPage = Math.ceil(total / limit);
@@ -92,15 +93,39 @@ export const updateBrand = async (req: Request, res: Response) => {
 export const deleteBrand = async (req: Request, res: Response) => {
   try {
     const brandId = req.params.id;
-    const usedInProducts = await Product.findOne({ brand: brandId });
+    if (!mongoose.isValidObjectId(brandId)) {
+      console.warn("DELETE brand invalid id", brandId);
+      return res.status(400).json({ error: "Invalid brand id" });
+    }
+    const brand = await Brand.findOne({
+      _id: brandId,
+      deletedAt: null,
+    });
+    if (!brand) {
+      return res
+        .status(404)
+        .json({ error: "Brand not found or already deleted" });
+    }
+    const usedInProducts = await Product.exists({
+      brand: brandId,
+      deletedAt: null,
+    });
     if (usedInProducts) {
       return res.status(400).json({
         error: "Cannot delete: Brand is associated with existing products.",
       });
     }
-    const deleted = await Brand.findByIdAndDelete(brandId);
+    await Brand.findByIdAndUpdate(
+      brandId,
+      {
+        $set: {
+          deletedAt: new Date(),
+          deletedBy: (req as any).user?._id ?? null,
+        },
+      },
+      { new: true }
+    );
 
-    if (!deleted) return res.status(404).json({ error: "Brand not found" });
     res.json({ message: "Brand deleted" });
   } catch (err) {
     res.status(500).json({ error: "Failed to delete brand" });

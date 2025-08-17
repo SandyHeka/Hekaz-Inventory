@@ -1,4 +1,5 @@
 import mongoose, { Document, Schema } from "mongoose";
+import softDelete from "../plugins/softDelete";
 
 export enum DealerStatus {
   ACTIVE = "active",
@@ -13,6 +14,8 @@ export interface IDealer extends Document {
   location: string;
   owner: string;
   status: DealerStatus;
+  deletedAt?: Date | null;
+  deletedBy?: mongoose.Types.ObjectId | null;
 }
 
 const dealerSchema: Schema = new Schema<IDealer>(
@@ -33,5 +36,9 @@ const dealerSchema: Schema = new Schema<IDealer>(
     timestamps: true,
   }
 );
+// soft-delete
+dealerSchema.plugin(softDelete);
 
+// helpful indexes
+dealerSchema.index({ deletedAt: 1 });
 export const Dealer = mongoose.model<IDealer>("Dealer", dealerSchema);

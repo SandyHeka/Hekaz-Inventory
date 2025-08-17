@@ -29,15 +29,15 @@ const DealerPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
-    if (message) {
-      const timer = setTimeout(() => {
-        setMessage("");
-        setError("");
-      }, 3000); // Hide after 3 seconds
+    if (!message && !error) return;
 
-      return () => clearTimeout(timer);
-    }
-  }, [message]);
+    const timer = setTimeout(() => {
+      setMessage("");
+      setError("");
+    }, 3000);
+
+    return () => clearTimeout(timer);
+  }, [message, error]);
 
   const fetchDealers = async () => {
     setLoading(true);

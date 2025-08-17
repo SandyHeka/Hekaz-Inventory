@@ -114,13 +114,14 @@ const PurchaseOrderPage = () => {
   }, []);
 
   useEffect(() => {
-    if (message || error) {
-      const timer = setTimeout(() => {
-        setMessage("");
-        setError("");
-      }, 3000);
-      return () => clearTimeout(timer);
-    }
+    if (!message && !error) return;
+
+    const timer = setTimeout(() => {
+      setMessage("");
+      setError("");
+    }, 3000);
+
+    return () => clearTimeout(timer);
   }, [message, error]);
 
   return (

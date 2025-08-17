@@ -58,13 +58,14 @@ const SalesOrderPage = () => {
   }, []);
 
   useEffect(() => {
-    if (message || error) {
-      const t = setTimeout(() => {
-        setMessage("");
-        setError("");
-      }, 3000);
-      return () => clearTimeout(t);
-    }
+    if (!message && !error) return;
+
+    const timer = setTimeout(() => {
+      setMessage("");
+      setError("");
+    }, 3000);
+
+    return () => clearTimeout(timer);
   }, [message, error]);
 
   const handleCreate = async (form: SalesOrderForm) => {

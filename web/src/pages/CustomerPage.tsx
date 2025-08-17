@@ -69,8 +69,10 @@ const CustomerPage = () => {
       setCustomers((prev) =>
         prev.filter((cust) => cust._id !== pendingDeleteId)
       );
-    } catch {
-      setError("Failed to delete customer");
+    } catch (e: any) {
+      const msg =
+        e?.response?.data?.error || e?.message || "Failed to delete customer";
+      setError(msg);
     } finally {
       setConfirmOpen(false);
       setPendingDeleteId(null);
@@ -80,15 +82,15 @@ const CustomerPage = () => {
     fetchCustomer(currentPage);
   }, [currentPage]);
   useEffect(() => {
-    if (message) {
-      const timer = setTimeout(() => {
-        setMessage("");
-        setError("");
-      }, 3000);
+    if (!message && !error) return;
 
-      return () => clearTimeout(timer);
-    }
-  }, [message]);
+    const timer = setTimeout(() => {
+      setMessage("");
+      setError("");
+    }, 3000);
+
+    return () => clearTimeout(timer);
+  }, [message, error]);
   return (
     <DashboardPage>
       <h2 className="text-2xl font-bold mb-6 text-gray-800 dark:text-gray-50">
@@ -113,7 +115,6 @@ const CustomerPage = () => {
             Customers
           </h3>
 
-          {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
           <CustomerList
             customers={customers}
             onDelete={openConfirmDialog}

@@ -1,6 +1,9 @@
 // controllers/customerController.ts
 import { Request, Response } from "express";
 import { Customer } from "../models/Customer";
+import mongoose from "mongoose";
+import SalesOrderItem from "../models/SalesOrderItem";
+import SalesOrder from "../models/SalesOrder";
 
 // Create customer (used by sales or system)
 export const createCustomer = async (req: Request, res: Response) => {
@@ -43,7 +46,7 @@ export const getAllCustomers = async (req: Request, res: Response) => {
   const skip = (page - 1) * limit;
   try {
     const [customer, total] = await Promise.all([
-      Customer.find().skip(skip).limit(limit),
+      Customer.find().skip(skip).limit(limit).sort({ createdAt: -1 }),
       Customer.countDocuments(),
     ]);
     const totalPage = Math.ceil(total / limit);
@@ -83,12 +86,39 @@ export const updateCustomer = async (req: Request, res: Response) => {
 export const deleteCustomer = async (req: Request, res: Response) => {
   try {
     const customerId = req.params.id;
+    if (!mongoose.isValidObjectId(customerId)) {
+      console.warn("DELETE customer invalid id", customerId);
+      return res.status(400).json({ error: "Invalid customer id" });
+    }
+    const deleteCustomer = await Customer.findOne({
+      _id: customerId,
+      deletedAt: null,
+    });
 
-    const deleteCustomer = await Customer.findOneAndDelete(customerId);
-
-    if (!deleteCustomer)
+    if (!deleteCustomer) {
       return res.status(404).json({ error: "Customer not found" });
-    res.json({ message: "Customer deleted" });
+    }
+    const blockedStatuses = { $ne: "Cancelled" };
+    const inUse = await SalesOrder.exists({
+      customerId: new mongoose.Types.ObjectId(customerId),
+      status: blockedStatuses,
+    });
+    if (inUse) {
+      return res.status(400).json({
+        error: "Cannot delete: customer is referenced by existing sales orders",
+      });
+    }
+    await Customer.findByIdAndUpdate(
+      customerId,
+      {
+        $set: {
+          deletedAt: new Date(),
+          deletedBy: (req as any).user?._id ?? null,
+        },
+      },
+      { new: true }
+    );
+    return res.json({ message: "Customer soft-deleted" });
   } catch (err) {
     res.status(500).json({ error: "Failed to delete customer" });
   }

@@ -23,7 +23,7 @@ export const getAllCategorys = async (req: Request, res: Response) => {
   const skip = (page - 1) * limit;
   try {
     const [category, total] = await Promise.all([
-      Category.find().skip(skip).limit(limit),
+      Category.find().skip(skip).limit(limit).sort({ createdAt: -1 }),
       Category.countDocuments(),
     ]);
     const totalPage = Math.ceil(total / limit);
@@ -63,23 +63,40 @@ export const deleteCategory = async (req: Request, res: Response) => {
     const categoryId = req.params.id;
     if (!mongoose.isValidObjectId(categoryId)) {
       console.warn("DELETE category invalid id", categoryId);
-      return res.status(400).json({ error: "Invalid product id" });
+      return res.status(400).json({ error: "Invalid category id" });
     }
-
-    const usedInProducts = await Product.findOne({
+    const category = await Category.findOne({
       _id: categoryId,
       deletedAt: null,
     });
-    if (!usedInProducts) {
+    if (!category) {
+      return res
+        .status(404)
+        .json({ error: "Category not found or already deleted" });
+    }
+    // Is this category referenced by any active (not soft-deleted) products?
+    const inUse = await Product.exists({
+      category: categoryId,
+      deletedAt: null,
+    });
+    if (inUse) {
       return res.status(400).json({
-        error: "Cannot delete: Catgeory is associated with existing products.",
+        error: "Cannot delete: Category is associated with existing products.",
       });
     }
 
-    const deleteCategory = await Category.findByIdAndDelete(categoryId);
-    if (!deleteCategory)
-      return res.status(404).json({ error: "Category not found" });
-    res.json({ message: "Category deleted" });
+    await Category.findByIdAndUpdate(
+      categoryId,
+      {
+        $set: {
+          deletedAt: new Date(),
+          deletedBy: (req as any).user?._id ?? null,
+        },
+      },
+      { new: true }
+    );
+
+    res.json({ message: "Category soft-deleted" });
   } catch (err) {
     res.status(500).json({ error: "Failed to delete category" });
   }

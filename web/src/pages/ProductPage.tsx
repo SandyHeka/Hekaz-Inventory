@@ -25,15 +25,15 @@ const ProductListPage = () => {
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
   useEffect(() => {
-    if (message) {
-      const timer = setTimeout(() => {
-        setMessage("");
-        setError("");
-      }, 3000); // Hide after 3 seconds
+    if (!message && !error) return;
 
-      return () => clearTimeout(timer);
-    }
-  }, [message]);
+    const timer = setTimeout(() => {
+      setMessage("");
+      setError("");
+    }, 3000);
+
+    return () => clearTimeout(timer);
+  }, [message, error]);
   const fetchProducts = async (page: number = 1) => {
     try {
       const {
